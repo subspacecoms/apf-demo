@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1, 2, 3]
+stepsCompleted: [1, 2, 3, 4]
 inputDocuments:
   - docs/specs/planning_artifacts/prds/prd-Project-Antigravity-2025-01-24/prd.md
   - docs/specs/planning_artifacts/briefs/brief-task-manager-2026-05-17/brief.md
@@ -94,3 +94,56 @@ App Router structure (`/app`) with separate layers for `/app/api` (Gemini/NLP) a
 Fast Refresh and Zod for runtime type-safe validation of NLP inputs.
 
 **Note:** Project initialization using these commands should be the first implementation story.
+
+## Core Architectural Decisions
+
+### Decision Priority Analysis
+
+**Critical Decisions (Block Implementation):**
+- **Data Sync Strategy:** Server-First with Offline Queue.
+- **Auth Provider:** NextAuth.js v5.
+- **NLP Processing:** Hybrid (Client-side highlighting + Gemini parsing).
+
+**Important Decisions (Shape Architecture):**
+- **Infrastructure:** GCP Cloud Run with Cloud Build.
+- **State Management:** Zustand for UI/Task state.
+
+**Deferred Decisions (Post-MVP):**
+- **Predictive Prioritization Model:** Initial heuristic-based, moving to ML-based as behavioral data is collected.
+
+### Data Architecture
+- **Database:** SQLite (via `better-sqlite3` in production on Cloud Run with persistent volume/Cloud Storage mount or standard ephemeral with sync).
+- **ORM:** Drizzle ORM (v0.30+).
+- **Offline Strategy:** `Dexie.js` for IndexedDB management to queue offline tasks.
+
+### Authentication & Security
+- **Provider:** NextAuth.js (v5) using Google OAuth.
+- **Session Management:** JWT-based sessions stored in secure, HTTP-only cookies.
+- **Authorization:** Middleware-based route protection for `/dashboard` and `/focus`.
+
+### API & Communication Patterns
+- **Standard:** Next.js Server Actions for all CRUD operations.
+- **AI Streaming:** Vercel AI SDK for streaming Gemini responses to the NLP bar.
+- **Validation:** Zod (v3.22+) for all input and environment variable validation.
+
+### Frontend Architecture
+- **State Management:** Zustand for global task filtering and Focus Mode state.
+- **Components:** Tailwind CSS + Radix UI (Headless) for accessible, minimalist components.
+- **PWA:** `@ducanh2912/next-pwa` for service worker management and manifest generation.
+
+### Infrastructure & Deployment
+- **Platform:** GCP Cloud Run.
+- **CI/CD:** Google Cloud Build triggered by GitHub repository pushes.
+- **Secret Management:** GCP Secret Manager for Gemini API keys and Auth secrets.
+
+### Decision Impact Analysis
+
+**Implementation Sequence:**
+1. Next.js/Drizzle/SQLite Initialization.
+2. NextAuth.js Configuration.
+3. NLP Fast-Entry Bar with Vercel AI SDK (Gemini).
+4. PWA Service Worker & Offline Queue.
+5. Prioritization Engine Heuristics.
+
+**Cross-Component Dependencies:**
+The NLP Fast-Entry Bar depends on both the AI SDK and the Server Actions layer for immediate task persistence. Focus Mode depends on the Zustand state store for UI isolation.
