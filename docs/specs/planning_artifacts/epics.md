@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1]
+stepsCompleted: [1, 2]
 inputDocuments:
   - docs/specs/planning_artifacts/prds/prd-Project-Antigravity-2025-01-24/prd.md
   - docs/specs/planning_artifacts/architecture.md
@@ -50,8 +50,27 @@ UX-DR4: Dashboard view for "Morning Planning" with a wizard-like "Plan My Day" e
 
 ### FR Coverage Map
 
-{{requirements_coverage_map}}
+FR1: Epic 2 - High-Velocity Task Capture
+FR2: Epic 2 - High-Velocity Task Capture
+FR3: Epic 4 - Intelligent Planning & Focus Mode
+FR4: Epic 4 - Intelligent Planning & Focus Mode
+FR5: Epic 4 - Intelligent Planning & Focus Mode
+FR6: Epic 3 - Reliable Persistence & Multi-Device Sync
 
 ## Epic List
 
-{{epics_list}}
+### Epic 1: Project Foundation & Secure Access
+Initialize the technical foundation and secure user access to ensure every task captured is personal and private.
+**FRs covered:** Prerequisites for all FRs.
+
+### Epic 2: High-Velocity Task Capture
+Enable users to dump thoughts instantly via a command-line interface with real-time AI feedback.
+**FRs covered:** FR1, FR2.
+
+### Epic 3: Reliable Persistence & Multi-Device Sync
+Ensure tasks are never lost by implementing a reliable SQLite storage layer that works offline and syncs across devices.
+**FRs covered:** FR6.
+
+### Epic 4: Intelligent Planning & Focus Mode
+Empower users to execute work through predictive daily planning and a distraction-free "Focus Mode."
+**FRs covered:** FR3, FR4, FR5.
