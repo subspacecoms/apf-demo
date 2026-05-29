@@ -1,6 +1,6 @@
 ---
 title: Product Brief: TaskFlow (Test)
-status: draft
+status: final
 created: 2024-05-22
 updated: 2024-05-22
 ---
@@ -8,31 +8,31 @@ updated: 2024-05-22
 # Product Brief: TaskFlow
 
 ## Executive Summary
-TaskFlow is a minimalist, speed-optimized task manager designed for individuals who find existing tools like Jira or Asana too heavy for daily personal productivity. It focuses on one thing: getting tasks out of your head and into a "done" state with zero friction. [ASSUMPTION: We are targeting individual users rather than teams.]
+TaskFlow is a minimalist, speed-optimized task manager built for individuals who find current tools like Jira or Asana too cumbersome for daily productivity. It is designed for one purpose: moving tasks from thought to "done" with zero friction. By stripping away enterprise bloat, TaskFlow provides a high-velocity "external brain" for personal task management.
 
 ## The Problem
-Most task managers suffer from "feature bloat," requiring multiple clicks to categorize, tag, or assign a task before it’s even saved. For the individual user, this friction leads to "task debt"—where the effort to manage the tool exceeds the benefit of the organization. [ASSUMPTION: The primary pain point is friction/complexity.]
+Mainstream task managers suffer from severe feature bloat. Requiring clicks for categorization, tagging, or assignment before a task is even saved creates "task debt." For individual users, the cognitive load of managing the tool often exceeds the benefit of the organization, leading to abandoned lists and fragmented focus.
 
 ## The Solution
-A web-based "input-first" interface. Open the app, type, hit Enter. TaskFlow uses natural language processing (NLP) to handle dates and priority (e.g., "Email Bob tomorrow at 9am !!"). No complex sidebars, no mandatory fields.
+An "input-first" web interface where the primary interaction is a single command line. Users simply open the app, type, and hit Enter. TaskFlow leverages natural language processing (NLP) to parse dates and priorities (e.g., "Review deck tomorrow at 10am !!"), eliminating the need for complex sidebars or mandatory input fields.
 
 ## What Makes This Different
-- **Extreme Speed**: The time from thought to saved task is under 2 seconds.
-- **Zero Configuration**: No folders or projects required by default; just a single "Current" list that auto-archives completed items.
-- **Keyboard-Centric**: Every action can be performed without a mouse.
+- **Frictionless Velocity**: The time from thought to saved task is consistently under 2 seconds.
+- **Zero Configuration**: No folders, projects, or setup required. A single "Current" list manages the workflow, with completed items auto-archiving.
+- **Keyboard-Centric Design**: A "mouse-is-optional" philosophy ensures that power users can manage their entire workflow via hotkeys and command strings.
 
 ## Who This Serves
-- **The "Mental Loader"**: Someone with a high volume of small tasks who needs a reliable external brain.
-- **The Minimalist**: Users who are tired of enterprise software and want a "digital notepad" that's smarter than paper.
+- **The High-Volume Doer**: Individuals managing dozens of small, tactical tasks who need a reliable, fast capture mechanism.
+- **The Minimalist**: Users seeking a "digital notepad" that offers the intelligence of software without the overhead of enterprise project management.
 
 ## Success Criteria
-- **Time-to-Task**: Average time to create a task is <3 seconds.
-- **Retention**: 40% of users who add a task on Day 1 return on Day 7.
-- **Completion Rate**: Ratio of created vs. completed tasks stays above 60%.
+- **Input Speed**: Average time-to-task creation remains under 3 seconds.
+- **User Retention**: 40% of Day 1 users return by Day 7.
+- **Throughput**: A created-to-completed task ratio maintained above 60%.
 
 ## Scope
-- **In-Scope**: NLP entry, simple list view, "Done" state, local browser storage/sync.
-- **Out-of-Scope**: Team collaboration, sub-tasks, file attachments, complex Gantt charts. [ASSUMPTION: These are the features we are cutting to maintain simplicity.]
+- **In-Scope**: NLP-powered entry, unified list view, "Done/Archive" states, and local storage with cross-device sync.
+- **Out-of-Scope**: Team collaboration/sharing, sub-task nesting, file attachments, and complex visualizations (Gantt/Kanban).
 
 ## Vision
-To become the default "command line" for personal productivity, eventually integrating with calendars and email via a similar low-friction interface.
+To become the "command line" for personal productivity. We aim to expand this low-friction interface to encompass calendar management and communication, eventually serving as the primary operating layer for individual workflow.
