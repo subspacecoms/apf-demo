@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1, 2]
+stepsCompleted: [1, 2, 3]
 inputDocuments:
   - docs/specs/planning_artifacts/prds/prd-Project-Antigravity-2025-01-24/prd.md
   - docs/specs/planning_artifacts/architecture.md
@@ -74,3 +74,75 @@ Ensure tasks are never lost by implementing a reliable SQLite storage layer that
 ### Epic 4: Intelligent Planning & Focus Mode
 Empower users to execute work through predictive daily planning and a distraction-free "Focus Mode."
 **FRs covered:** FR3, FR4, FR5.
+
+## Epic 1: Project Foundation & Secure Access
+
+Initialize the technical foundation and secure user access to ensure every task captured is personal and private.
+
+### Story 1.1: Initial Project Scaffolding
+
+As a developer,
+I want to initialize the Next.js project with Tailwind CSS and the defined directory structure,
+So that I have a consistent foundation for building features.
+
+**Acceptance Criteria:**
+
+**Given** a new repository
+**When** I run the initialization commands
+**Then** a Next.js 14 App Router project is created with TypeScript and Tailwind CSS
+**And** the directory structure follows the feature-based organization (e.g., /app/features)
+**And** a basic "Welcome" page is visible on the root route.
+
+### Story 1.2: Database & ORM Setup
+
+As a developer,
+I want to configure Drizzle ORM with SQLite,
+So that I can persist user tasks and settings in a type-safe manner.
+
+**Acceptance Criteria:**
+
+**Given** an initialized Next.js project
+**When** I configure Drizzle ORM and the better-sqlite3 driver
+**Then** I can define a `tasks` and `users` schema in `lib/db/schema.ts`
+**And** I can run a test migration or query to confirm the SQLite database is connected and writable.
+
+### Story 1.3: Google OAuth Authentication
+
+As a user,
+I want to log in using my Google account,
+So that my tasks are securely stored and accessible only to me.
+
+**Acceptance Criteria:**
+
+**Given** the application is running
+**When** I navigate to the login page and click "Sign in with Google"
+**Then** I am redirected to the Google OAuth consent screen
+**And** upon successful authentication, I am redirected to the private dashboard
+**And** my user session is persisted via NextAuth.js v5.
+
+### Story 1.4: PWA Manifest & Service Worker
+
+As a mobile user,
+I want to install the application as a PWA,
+So that I can access it quickly from my home screen and use it offline.
+
+**Acceptance Criteria:**
+
+**Given** a configured Next.js project
+**When** I add @ducanh2912/next-pwa and configure the manifest
+**Then** the browser identifies the site as an installable PWA
+**And** a service worker is registered to handle basic offline caching of assets.
+
+### Story 1.5: GCP Deployment Pipeline Scaffolding
+
+As a developer,
+I want to automate the deployment to GCP Cloud Run,
+So that changes are consistently and safely deployed to production.
+
+**Acceptance Criteria:**
+
+**Given** the project source code
+**When** I push a change to the main branch
+**Then** a GitHub Action triggers a build of the Docker container
+**And** the container is deployed to Google Cloud Run via Cloud Build
+**And** the application is accessible at a public GCP URL.
