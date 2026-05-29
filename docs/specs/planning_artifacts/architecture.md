@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1, 2, 3, 4, 5]
+stepsCompleted: [1, 2, 3, 4, 5, 6]
 inputDocuments:
   - docs/specs/planning_artifacts/prds/prd-Project-Antigravity-2025-01-24/prd.md
   - docs/specs/planning_artifacts/briefs/brief-task-manager-2026-05-17/brief.md
@@ -238,3 +238,115 @@ export async function createTaskAction(data: TaskSchema): Promise<ActionResponse
 - Directly throwing errors from Server Actions without a wrapper.
 - Using `camelCase` for database column names in Drizzle schemas.
 - Placing feature-specific components in a global `components/` folder.
+
+## Project Structure & Boundaries
+
+### Complete Project Directory Structure
+
+```text
+project-antigravity/
+├── README.md
+├── package.json
+├── next.config.mjs
+├── tailwind.config.ts
+├── tsconfig.json
+├── drizzle.config.ts
+├── .env.local
+├── .github/
+│   └── workflows/
+│       └── gcp-deploy.yml
+├── app/
+│   ├── (auth)/
+│   │   ├── login/page.tsx
+│   │   └── layout.tsx
+│   ├── (dashboard)/
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── api/
+│   │   ├── auth/[...nextauth]/route.ts
+│   │   └── ai/parse/route.ts
+│   ├── features/
+│   │   ├── task-capture/
+│   │   │   ├── components/
+│   │   │   │   ├── fast-entry-bar.tsx
+│   │   │   │   └── nlp-highlight.tsx
+│   │   │   ├── actions/
+│   │   │   │   └── capture-task.ts
+│   │   │   └── hooks/
+│   │   │       └── use-nlp-parser.ts
+│   │   ├── focus/
+│   │   │   ├── components/
+│   │   │   │   └── focus-task-view.tsx
+│   │   │   └── store/
+│   │   │       └── focus-store.ts
+│   │   └── daily-planning/
+│   │       ├── actions/
+│   │       │   └── generate-daily-plan.ts
+│   │       └── components/
+│   │           └── planning-wizard.tsx
+│   ├── globals.css
+│   └── layout.tsx
+├── components/
+│   └── ui/              # Radix UI / Shadcn base components
+├── lib/
+│   ├── db/
+│   │   ├── index.ts     # Drizzle client
+│   │   └── schema.ts    # SQLite tables
+│   ├── ai/
+│   │   ├── gemini.ts    # Gemini SDK config
+│   │   └── parser.ts    # NLP logic
+│   └── utils.ts
+├── public/
+│   ├── icons/           # PWA icons
+│   └── manifest.json    # PWA manifest
+└── tests/
+    ├── unit/
+    └── integration/
+```
+
+### Architectural Boundaries
+
+**API Boundaries:**
+- **Next.js Server Actions:** Primary boundary for internal data mutation and NLP parsing.
+- **NextAuth API:** Secure boundary for authentication flows with Google OAuth.
+- **AI Streaming API:** Dedicated `/api/ai/parse` for high-frequency NLP feedback.
+
+**Component Boundaries:**
+- **Shared UI:** Independent components in `/components/ui` with no business logic.
+- **Feature Modules:** Encapsulated logic in `/app/features/` to prevent cross-feature dependency leakage.
+- **State Store:** Zustand stores provide a boundary between raw data and UI-reactive state.
+
+**Service Boundaries:**
+- **NLP Service:** Abstracted in `lib/ai/parser.ts` to allow switching between regex and Gemini logic.
+- **Database Service:** Drizzle layer in `lib/db` acts as the single entry point for SQLite operations.
+
+**Data Boundaries:**
+- **Persistence:** SQLite for long-term storage; IndexedDB for ephemeral offline queuing.
+- **Validation:** Zod schemas define the boundary for all incoming data at the Server Action level.
+
+### Requirements to Structure Mapping
+
+**Feature/Epic Mapping:**
+- **NLP Fast Capture:** `app/features/task-capture/`
+- **Predictive Prioritization:** `app/features/daily-planning/` and `lib/ai/prioritization-engine.ts`
+- **Focus Mode:** `app/features/focus/`
+
+**Cross-Cutting Concerns:**
+- **Authentication:** `app/(auth)/` and `lib/auth/`
+- **Database/Storage:** `lib/db/` and `public/manifest.json` (PWA configuration)
+
+### Integration Points
+
+**Internal Communication:**
+- Components trigger Server Actions for data persistence.
+- Zustand handles real-time UI state (e.g., toggling Focus Mode).
+
+**External Integrations:**
+- **Google Gemini API:** Integrated via Vercel AI SDK in the NLP feature.
+- **GCP Cloud Run:** Deployment target via GitHub Actions.
+
+**Data Flow:**
+1. User Input -> NLP Bar (Client-side Highlight)
+2. Debounced Input -> Gemini Parser (Backend Action)
+3. Action Returns parsed entities -> UI Updates
+4. Save -> Server Action (Drizzle/SQLite) -> Sync Queue (if offline)
