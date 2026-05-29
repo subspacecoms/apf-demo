@@ -146,3 +146,171 @@ So that changes are consistently and safely deployed to production.
 **Then** a GitHub Action triggers a build of the Docker container
 **And** the container is deployed to Google Cloud Run via Cloud Build
 **And** the application is accessible at a public GCP URL.
+
+## Epic 2: High-Velocity Task Capture
+
+Enable users to dump thoughts instantly via a command-line interface with real-time AI feedback.
+
+### Story 2.1: CLI-style Fast-Entry Bar UI
+
+As a user,
+I want a minimalist, command-line style input field,
+So that I can capture tasks with zero friction.
+
+**Acceptance Criteria:**
+
+**Given** the user is on the dashboard
+**When** the dashboard loads, the input bar is automatically focused
+**Then** I can type my task into a clean, distraction-free input field
+**And** the input remains the focal point of the interface.
+
+### Story 2.2: Client-side NLP Highlighting (Regex)
+
+As a user,
+I want immediate visual confirmation of tags and priorities,
+So that I know the system understands my input shorthand.
+
+**Acceptance Criteria:**
+
+**Given** I am typing in the Fast-Entry bar
+**When** I type shorthand like `!high`, `#work`, or `@project`
+**Then** the text is immediately highlighted in the UI (< 100ms)
+**And** the UI visually distinguishes between different entity types (e.g., tags vs. priorities).
+
+### Story 2.3: Gemini-powered Task Parsing (Backend)
+
+As a user,
+I want the system to understand natural language dates and priorities,
+So that I don't have to manually format my tasks.
+
+**Acceptance Criteria:**
+
+**Given** I have typed a task like "Call Bob tomorrow at 2pm"
+**When** I submit the task or pause typing
+**Then** the Gemini 1.5 Flash model parses the date, time, and priority from the string
+**And** the entities are accurately extracted and ready for persistence.
+
+### Story 2.4: Real-time Feedback Stream
+
+As a user,
+I want to see the AI's parsing results as I type,
+So that I can verify the categorization in real-time.
+
+**Acceptance Criteria:**
+
+**Given** I am typing in the capture bar
+**When** the debounced input is sent to the AI service
+**Then** the Vercel AI SDK streams the parsed entity results back to the UI
+**And** the UI updates to show the confirmed date, project, and priority alongside the input.
+
+## Epic 3: Reliable Persistence & Multi-Device Sync
+
+Ensure tasks are never lost by implementing a reliable SQLite storage layer that works offline and syncs across devices.
+
+### Story 3.1: Task CRUD via Server Actions
+
+As a user,
+I want my tasks to be saved directly to the database,
+So that they are persisted across sessions.
+
+**Acceptance Criteria:**
+
+**Given** I have entered a task
+**When** I press Enter
+**Then** the task is saved to the SQLite database via Drizzle and Next.js Server Actions
+**And** the dashboard list updates to include the new task.
+
+### Story 3.2: Local Persistence with IndexedDB (Dexie.js)
+
+As an offline user,
+I want my tasks to be saved locally when I have no connection,
+So that I never lose a captured thought.
+
+**Acceptance Criteria:**
+
+**Given** I am offline
+**When** I enter a task
+**Then** the task is immediately saved to the browser's IndexedDB using Dexie.js
+**And** the task is marked as "pending sync."
+
+### Story 3.3: Offline Queue & Background Sync
+
+As a user,
+I want my offline tasks to sync automatically when I regain internet access,
+So that my task list is always up-to-date.
+
+**Acceptance Criteria:**
+
+**Given** pending tasks in my local IndexedDB queue
+**When** the internet connection is restored
+**Then** the application automatically syncs the pending tasks to the server's SQLite database
+**And** the sync happens in the background without interrupting my work.
+
+### Story 3.4: Multi-device Conflict Resolution
+
+As a user with multiple devices,
+I want my task list to stay consistent across all platforms,
+So that I can manage my tasks from anywhere.
+
+**Acceptance Criteria:**
+
+**Given** I update a task on my mobile device
+**When** I open the application on my desktop
+**Then** the desktop dashboard shows the updated task state within < 2 seconds
+**And** a "last-write-wins" strategy resolves any timestamp conflicts.
+
+## Epic 4: Intelligent Planning & Focus Mode
+
+Empower users to execute work through predictive daily planning and a distraction-free "Focus Mode."
+
+### Story 4.1: Task Prioritization Heuristics (v1)
+
+As a user,
+I want the system to suggest which tasks are most urgent,
+So that I can focus on what matters.
+
+**Acceptance Criteria:**
+
+**Given** a pool of active tasks
+**When** I view my task list
+**Then** the system calculates a priority score based on deadlines, tags, and priority flags
+**And** tasks are sorted by their urgency score.
+
+### Story 4.2: "Plan My Day" Wizard
+
+As a user,
+I want an intelligent suggestion for my daily plan,
+So that I can start my day with focus.
+
+**Acceptance Criteria:**
+
+**Given** I start my morning routine
+**When** I click "Plan My Day"
+**Then** the system presents a suggested list of up to 5 tasks based on urgency
+**And** I can confirm, remove, or reorder the suggestions before starting my day.
+
+### Story 4.3: Focus Mode UI State (Zustand)
+
+As a user,
+I want to eliminate all distractions when working on a task,
+So that I can enter "Deep Work."
+
+**Acceptance Criteria:**
+
+**Given** I have started a task from my daily plan
+**When** I toggle Focus Mode
+**Then** the UI (managed by Zustand) removes all sidebars and lists
+**And** only the current active task and its details are visible.
+
+### Story 4.4: Completion & Deferral Tracking
+
+As a user,
+I want the system to learn from my habits,
+So that its daily suggestions become more accurate over time.
+
+**Acceptance Criteria:**
+
+**Given** I complete or defer a suggested task
+**When** the action is saved
+**Then** the system logs the behavioral event (completion time, deferral rate per tag)
+**And** this data is used to adjust the weight of similar tasks in future "Plan My Day" generations.
