@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1, 2]
+stepsCompleted: [1, 2, 3]
 inputDocuments:
   - docs/specs/planning_artifacts/prds/prd-Project-Antigravity-2025-01-24/prd.md
   - docs/specs/planning_artifacts/briefs/brief-task-manager-2026-05-17/brief.md
@@ -40,3 +40,57 @@ The application centers on high-velocity task capture (NLP-based) and intelligen
 - **Real-time State Management:** Critical for both the NLP feedback and multi-device sync.
 - **Data Persistence & Sync:** Handling offline-to-online transitions reliably.
 - **Behavioral Data Ingestion:** Tracking completions and deferrals for the prioritization engine.
+
+## Starter Template Evaluation
+
+### Primary Technology Domain
+Full-stack Web Application (Next.js) based on the requirement for high-speed capture and multi-device sync.
+
+### Starter Options Considered
+- **T3 Stack:** Strong type-safety but complex for PWA integration.
+- **Vercel AI Starter:** Excellent Gemini integration but defaults to Postgres.
+- **Custom Next.js + Drizzle:** Best balance for SQLite performance.
+
+### Selected Starter: Next.js Modern Full-stack (Custom Composition)
+
+**Rationale for Selection:**
+To meet the <100ms NLP feedback and SQLite requirements, a combination of Next.js 14 (App Router) and Drizzle ORM provides the lowest overhead and maximum control over the local-first PWA sync strategy.
+
+**Initialization Command:**
+
+```bash
+# Initialize Next.js with Tailwind and App Router
+npx create-next-app@latest project-antigravity --typescript --tailwind --eslint
+
+# Add Drizzle ORM and SQLite
+npm install drizzle-orm better-sqlite3
+npm install -D drizzle-kit @types/better-sqlite3
+
+# Add Gemini/AI capabilities
+npm install @google/generative-ai ai
+
+# Add PWA support
+npm install @ducanh2912/next-pwa
+```
+
+**Architectural Decisions Provided by Starter:**
+
+**Language & Runtime:**
+TypeScript with Node.js 20+ runtime for optimal performance on GCP Cloud Run.
+
+**Styling Solution:**
+Tailwind CSS for high-speed, minimalist UI development (required for Focus Mode).
+
+**Build Tooling:**
+Next.js Turbo (SWC-based) for fastest possible development cycles and optimized production builds.
+
+**Testing Framework:**
+Vitest for fast unit testing of the NLP parsing logic.
+
+**Code Organization:**
+App Router structure (`/app`) with separate layers for `/app/api` (Gemini/NLP) and `/lib/db` (Drizzle/SQLite).
+
+**Development Experience:**
+Fast Refresh and Zod for runtime type-safe validation of NLP inputs.
+
+**Note:** Project initialization using these commands should be the first implementation story.
