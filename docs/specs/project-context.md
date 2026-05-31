@@ -2,7 +2,7 @@
 project_name: 'Greenfield'
 user_name: 'sumeetsing@gcp.altostrat.com'
 date: '2026-05-17'
-sections_completed: ['initialization']
+sections_completed: ['technology_stack']
 existing_patterns_found: 0
 ---
 
@@ -14,8 +14,12 @@ _This file contains critical rules and patterns that AI agents must follow when 
 
 ## Technology Stack & Versions
 
-- No technologies discovered yet. Project is in initialization phase.
+- **TypeScript v5.x**: Strict mode enabled.
+- **Node.js v20.x (LTS)**: Using ESM modules (`"type": "module"`).
+- **Package Manager**: NPM (standard).
+- **Testing**: Vitest for unit and integration testing.
+- **Linting/Formatting**: ESLint (standard config) + Prettier.
 
 ## Critical Implementation Rules
 
-- No rules defined yet.
+_Documented after discovery phase_
