@@ -14,10 +14,31 @@ _This file contains critical rules and patterns that AI agents must follow when 
 
 ## Technology Stack & Versions
 
-- **Project Type:** Greenfield
-- **Repository:** https://github.com/subspacecoms/apf-demo
-- **Technologies:** To be determined.
+- **Primary Technologies:** Not yet defined (Greenfield project).
+- **Architecture Style:** TBD.
 
 ## Critical Implementation Rules
 
-- No specific implementation rules discovered yet.
+### Language-Specific Rules
+
+- To be defined once the primary programming language is selected.
+
+### Framework-Specific Rules
+
+- To be defined once frameworks are selected.
+
+### Testing Rules
+
+- To be defined.
+
+### Code Quality & Style Rules
+
+- To be defined.
+
+### Development Workflow Rules
+
+- To be defined.
+
+### Critical Don't-Miss Rules
+
+- To be defined.
