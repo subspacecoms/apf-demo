@@ -1,64 +1,62 @@
-# Product Brief: Greenfield (Privacy-First Task Manager)
-
 ---
-title: Greenfield (Privacy-First Task Manager)
+title: Product Brief: Greenfield
 status: draft
 created: 2026-05-17
 updated: 2026-05-17
 ---
 
+# Product Brief: Greenfield
+
 ## Executive Summary
+Greenfield is a local-first, minimalist To Do application designed for individuals who refuse to trade their personal data for productivity. Unlike modern "SaaS" task managers, Greenfield operates entirely on-device, ensuring that your daily plans, habits, and secrets never leave your hardware.
 
-Greenfield is a local-first, privacy-centric task management application designed for individuals who refuse to compromise their personal data for productivity. Unlike mainstream tools that require cloud synchronization and account creation, Greenfield operates entirely on the user's local machine.
-
-The vision is to provide a "sovereign" productivity environment where the user owns their data in a human-readable format, ensuring long-term accessibility and absolute privacy.
+By combining a distraction-free interface with a strictly offline architecture, Greenfield provides a sanctuary for focus. It is open-source, auditable, and built on the belief that a tool should serve the user, not the data broker.
 
 ## The Problem
+Most modern productivity tools are "cloud-first," requiring user accounts and centralizing data on remote servers. This architecture introduces several points of failure:
+- **Privacy Erosion:** Personal tasks and routines are mined for metadata or exposed to data breaches.
+- **The "Cloud Tax":** Mandatory accounts, subscription models, and "syncing" lag that interrupts the flow of work.
+- **Feature Bloat:** Apps often include social features, AI suggestions, and complex project management tools that distract from the simple act of finishing a task.
 
-Modern task management tools (Todoist, Jira, Trello) are built on a "Cloud-First" model. This creates several pain points for privacy-conscious users:
-- **Data Harvesting:** Personal schedules and habits are stored on third-party servers and often used for telemetry or advertising.
-- **Service Dependency:** If the service goes down or the company changes its terms, the user loses access to their workflow.
-- **Bloat:** Features designed for team collaboration and monetization often clutter the interface for solo users.
+[ASSUMPTION]: We are assuming users are increasingly frustrated by "productivity porn" and are looking for a "dumb but fast" tool that respects their agency.
 
 ## The Solution
-
-A minimalist desktop application that manages tasks without any external service dependencies. 
-- **Zero-Cloud Architecture:** No login required. No internet connection needed.
-- **Local Storage:** All data is stored in a simple, open format (e.g., Markdown or JSON) on the user's hard drive. `[ASSUMPTION: We will start with a single-file JSON or SQLite structure for simplicity.]`
-- **Fast UI:** Near-instant interaction speeds because there is no network latency.
+A sleek, open-source utility that prioritizes speed and security. Greenfield is a GUI-based application that stores all data in a local, human-readable format.
+- **No Accounts:** Open the app and start typing.
+- **No Syncing:** Data stays on the device it was created on.
+- **Extreme Speed:** Because there is no network overhead, interactions are near-instant.
 
 ## What Makes This Different
+1. **Local-First by Design:** While other apps offer "offline mode" as a fallback, Greenfield treats the network as a non-entity.
+2. **Auditable Minimalism:** Being open-source allows the community to verify that no "phone-home" telemetry exists.
+3. **Intentional Constraints:** By intentionally omitting cloud sync, Greenfield forces a level of digital hygiene and focus that bloated alternatives cannot match.
 
-- **Privacy as a Feature:** Most apps list privacy in the fine print; for Greenfield, the *absence* of features (no sync, no social) is the primary value proposition.
-- **Data Sovereignty:** The user can open their task file in any text editor. They are not locked into the "Greenfield" ecosystem.
-- **Longevity:** Because it is local, the tool will work 10-20 years from now regardless of whether the developer maintains a backend server.
+[ASSUMPTION]: We believe the "Open Source" tag acts as the primary trust-builder, replacing the need for corporate "Privacy Policy" legal-speak.
 
 ## Who This Serves
-
-- **The Privacy Advocate:** Users who prioritize data security and sovereignty.
-- **The Minimalist:** Solo creators or professionals who want a focused, no-nonsense tool without "team collaboration" overhead.
-- **The "Local-Only" User:** Individuals working in high-security environments or with unreliable internet.
+- **Privacy Advocates:** Users who prioritize digital sovereignty and data ownership.
+- **Minimalists:** Those seeking a "Zen" interface with zero distractions.
+- **High-Security Professionals:** Individuals (journalists, lawyers, developers) handling sensitive task descriptions that cannot risk cloud exposure.
 
 ## Success Criteria
-
-- **Privacy Audit:** Zero external network requests during operation.
-- **Performance:** App launch to "Task Entry" in under 2 seconds. `[ASSUMPTION: We are targeting Desktop users first.]`
-- **User Adoption:** Successful daily use by the primary stakeholder (you) without feeling the need to revert to cloud tools.
+- **Performance:** App launch time < 150ms; UI interaction latency < 16ms.
+- **Zero Leakage:** 100% confirmation through community audit that no data packets are sent to external servers.
+- **Community Adoption:** High star-count and contribution rate on open-source platforms (GitHub/GitLab).
+- **Portability:** Users can easily export/import their task data in a standard format (e.g., JSON or Markdown).
 
 ## Scope
+**In-Scope:**
+- Single-list and basic "Folder/Project" organization.
+- Task prioritization (High, Medium, Low).
+- Local-only notifications/reminders.
+- Manual data export/import (JSON/Markdown).
+- Cross-platform desktop support (Electron or Rust-based GUI).
 
-**In Scope (v1):**
-- Create, Read, Update, Delete (CRUD) tasks.
-- Simple categorization (e.g., Tags or Folders). `[ASSUMPTION: Tags will be used for categorization.]`
-- Basic "Done" / "Not Done" states.
-- Local file export/backup.
-
-**Out of Scope (v1):**
-- Mobile synchronization.
-- Multi-user collaboration.
-- External calendar API integrations.
-- Reminders/Notifications that require a background service.
+**Out-of-Scope:**
+- User accounts and login systems.
+- Cloud-based synchronization.
+- Collaborative/Team features.
+- AI-driven task sorting or "smart" suggestions.
 
 ## Vision
-
-Greenfield aims to become the foundational "Personal Operating System" component for privacy-conscious individuals. In 2-3 years, it could expand to include local-only notes and habits, all linked through a local knowledge graph, serving as a completely offline alternative to "Second Brain" tools.
+In 2-3 years, Greenfield aims to be the gold standard for "sovereign utilities"—a suite of essential tools (Calendar, Notes, Tasks) that prove high-end software doesn't need a cloud backend to be powerful. It will be the first choice for anyone building a "Personal Area Network" where they own every byte of their digital life.
