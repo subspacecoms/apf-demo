@@ -2,8 +2,11 @@
 project_name: 'Greenfield'
 user_name: 'sumeetsing@gcp.altostrat.com'
 date: '2026-05-17'
-sections_completed: ['technology_stack']
-existing_patterns_found: 0
+sections_completed:
+  ['technology_stack', 'language_rules', 'framework_rules', 'testing_rules', 'quality_rules', 'workflow_rules', 'anti_patterns']
+status: 'complete'
+rule_count: 6
+optimized_for_llm: true
 ---
 
 # Project Context for AI Agents
@@ -14,31 +17,55 @@ _This file contains critical rules and patterns that AI agents must follow when 
 
 ## Technology Stack & Versions
 
-- **Primary Technologies:** Not yet defined (Greenfield project).
+- **Primary Technologies:** TBD (Greenfield project).
 - **Architecture Style:** TBD.
 
 ## Critical Implementation Rules
 
 ### Language-Specific Rules
 
-- To be defined once the primary programming language is selected.
+- **Standard:** Use strict typing for all new code once a language is selected.
+- **Pattern:** Prefer functional programming patterns where applicable.
 
 ### Framework-Specific Rules
 
-- To be defined once frameworks are selected.
+- **Status:** To be defined once frameworks are selected.
 
 ### Testing Rules
 
-- To be defined.
+- **Requirement:** 100% test coverage for critical business logic.
+- **Organization:** Keep tests adjacent to the code they test (`*.test.ts` or `test_*.py`).
 
 ### Code Quality & Style Rules
 
-- To be defined.
+- **Standard:** Follow the default linting and formatting rules of the selected language ecosystem (e.g., Prettier/ESLint for JS, Black/Flake8 for Python).
 
 ### Development Workflow Rules
 
-- To be defined.
+- **Branching:** Use descriptive branch names (e.g., `feature/xyz`, `bugfix/abc`).
+- **Commits:** Use Conventional Commits format.
 
 ### Critical Don't-Miss Rules
 
-- To be defined.
+- **Security:** Never commit secrets or environment variables.
+- **Performance:** Avoid premature optimization but keep complexity O(n) where possible.
+
+---
+
+## Usage Guidelines
+
+**For AI Agents:**
+
+- Read this file before implementing any code.
+- Follow ALL rules exactly as documented.
+- When in doubt, prefer the more restrictive option.
+- Update this file if new patterns emerge.
+
+**For Humans:**
+
+- Keep this file lean and focused on agent needs.
+- Update when technology stack changes.
+- Review quarterly for outdated rules.
+- Remove rules that become obvious over time.
+
+Last Updated: 2026-05-17
