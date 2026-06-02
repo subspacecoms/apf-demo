@@ -2,9 +2,9 @@
 project_name: 'Greenfield'
 user_name: 'sumeetsing@gcp.altostrat.com'
 date: '2026-05-17'
-sections_completed: ['technology_stack']
+sections_completed: ['technology_stack', 'language_rules']
 status: 'in-progress'
-rule_count: 6
+rule_count: 8
 optimized_for_llm: true
 ---
 
@@ -25,8 +25,10 @@ _This file contains critical rules and patterns that AI agents must follow when 
 
 ### Language-Specific Rules
 
-- **Standard:** Use strict typing for all new code once a language is selected.
-- **Pattern:** Prefer functional programming patterns where applicable.
+- **Strict Typing:** All new code must use strict typing (e.g., TypeScript strict mode, Python type hints) once a language is confirmed.
+- **Functional Patterns:** Prefer functional programming patterns (immutability, pure functions) where applicable over deep class hierarchies.
+- **Async/Await:** Use async/await consistently for all asynchronous operations; avoid raw Promises or callbacks unless required by a library.
+- **Error Handling:** Use explicit error handling (try/catch blocks) with descriptive error messages rather than silent failures.
 
 ### Framework-Specific Rules
 
