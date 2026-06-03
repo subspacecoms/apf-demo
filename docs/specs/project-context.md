@@ -2,7 +2,7 @@
 project_name: 'Greenfield'
 user_name: 'sumeetsing@gcp.altostrat.com'
 date: '2025-01-24'
-sections_completed: ['discovery', 'technology_stack']
+sections_completed: ['discovery', 'technology_stack', 'language_rules']
 existing_patterns_found: 0
 ---
 
@@ -22,7 +22,9 @@ _This file contains critical rules and patterns that AI agents must follow when 
 
 ### Language-Specific Rules
 
-_To be documented_
+- **General:** Follow Clean Code principles and standard conventions for the chosen language.
+- **Error Handling:** Prioritize explicit error handling over silent failures.
+- **Types:** If using a typed language, prefer strict typing and avoid `any` or equivalent types.
 
 ### Framework-Specific Rules
 
