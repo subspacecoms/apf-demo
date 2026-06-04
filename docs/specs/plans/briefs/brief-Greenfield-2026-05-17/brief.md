@@ -1,46 +1,62 @@
 ---
-title: Greenfield Privacy-Focused Todo App
-status: finalized
+title: Product Brief: Greenfield
+status: draft
 created: 2026-05-17
 updated: 2026-05-17
 ---
 
-# Product Brief: Greenfield Privacy Todo
+# Product Brief: Greenfield
 
-## Vision
-Greenfield exists to restore digital sovereignty to personal productivity. Our vision is a world where managing your daily life doesn't require a trade-off with your data privacy. We aim to provide the most trusted, zero-compromise task management experience for those who demand absolute ownership of their information.
+## Executive Summary
+Greenfield is a local-first, minimalist To Do application designed for individuals who refuse to trade their personal data for productivity. Unlike modern "SaaS" task managers, Greenfield operates entirely on-device, ensuring that your daily plans, habits, and secrets never leave your hardware.
+
+By combining a distraction-free interface with a strictly offline architecture, Greenfield provides a sanctuary for focus. It is open-source, auditable, and built on the belief that a tool should serve the user, not the data broker.
 
 ## The Problem
-Mainstream task managers treat user data as a commodity. By storing tasks in plain text on centralized servers to enable sync and features, they create a permanent risk of data breaches, unauthorized access, and corporate profiling. For privacy-conscious individuals and professionals handling sensitive information, the current market offers convenience at the cost of security.
+Most modern productivity tools are "cloud-first," requiring user accounts and centralizing data on remote servers. This architecture introduces several points of failure:
+- **Privacy Erosion:** Personal tasks and routines are mined for metadata or exposed to data breaches.
+- **The "Cloud Tax":** Mandatory accounts, subscription models, and "syncing" lag that interrupts the flow of work.
+- **Feature Bloat:** Apps often include social features, AI suggestions, and complex project management tools that distract from the simple act of finishing a task.
 
-## Target Audience
-- **Privacy Enthusiasts:** Individuals who prioritize data ownership and avoid centralized cloud ecosystems.
-- **Security-Conscious Professionals:** Journalists, legal counsel, and researchers who manage sensitive project timelines and confidential reminders.
-- **Digital Minimalists:** Users seeking a clean, focused tool that respects their attention by refusing to include "engagement-driving" telemetry or tracking.
+[ASSUMPTION]: We are assuming users are increasingly frustrated by "productivity porn" and are looking for a "dumb but fast" tool that respects their agency.
 
-## Solution Pillars
-1. **Local-First Architecture:** Data is generated and stored on the device by default. No account or network connection is required for core functionality.
-2. **Zero-Knowledge Sync:** Optional multi-device synchronization is powered by end-to-end encryption (E2EE). User-controlled keys ensure that even the Greenfield infrastructure cannot access task content.
-3. **Physical-Layer Security:** Built-in biometric and PIN locks protect data from local unauthorized access, ensuring privacy even if a device is shared or lost.
-4. **Hard-Line Transparency:** Zero third-party analytics or tracking. The app's footprint is invisible to the broader data economy.
+## The Solution
+A sleek, open-source utility that prioritizes speed and security. Greenfield is a GUI-based application that stores all data in a local, human-readable format.
+- **No Accounts:** Open the app and start typing.
+- **No Syncing:** Data stays on the device it was created on.
+- **Extreme Speed:** Because there is no network overhead, interactions are near-instant.
+
+## What Makes This Different
+1. **Local-First by Design:** While other apps offer "offline mode" as a fallback, Greenfield treats the network as a non-entity.
+2. **Auditable Minimalism:** Being open-source allows the community to verify that no "phone-home" telemetry exists.
+3. **Intentional Constraints:** By intentionally omitting cloud sync, Greenfield forces a level of digital hygiene and focus that bloated alternatives cannot match.
+
+[ASSUMPTION]: We believe the "Open Source" tag acts as the primary trust-builder, replacing the need for corporate "Privacy Policy" legal-speak.
+
+## Who This Serves
+- **Privacy Advocates:** Users who prioritize digital sovereignty and data ownership.
+- **Minimalists:** Those seeking a "Zen" interface with zero distractions.
+- **High-Security Professionals:** Individuals (journalists, lawyers, developers) handling sensitive task descriptions that cannot risk cloud exposure.
+
+## Success Criteria
+- **Performance:** App launch time < 150ms; UI interaction latency < 16ms.
+- **Zero Leakage:** 100% confirmation through community audit that no data packets are sent to external servers.
+- **Community Adoption:** High star-count and contribution rate on open-source platforms (GitHub/GitLab).
+- **Portability:** Users can easily export/import their task data in a standard format (e.g., JSON or Markdown).
 
 ## Scope
-### In-Scope
-- **Core Productivity:** Robust task CRUD, hierarchical lists, and tagging.
-- **On-Device Intelligence:** Local notifications and reminders that never leave the system tray.
-- **Interoperability:** Encrypted export/import (JSON/Markdown) to prevent platform lock-in.
-- **Rich Notes:** Markdown support for detailed task descriptions.
+**In-Scope:**
+- Single-list and basic "Folder/Project" organization.
+- Task prioritization (High, Medium, Low).
+- Local-only notifications/reminders.
+- Manual data export/import (JSON/Markdown).
+- Cross-platform desktop support (Electron or Rust-based GUI).
 
-### Out-of-Scope (Initial Release)
-- **Collaborative Workspaces:** Multi-user collaboration is deferred to maintain the integrity of the zero-knowledge model.
-- **Cloud-Based NLP:** No server-side natural language processing; all parsing remains local to protect input patterns.
-- **Third-Party Integrations:** External API connections (e.g., Zapier) are excluded to prevent metadata leakage.
+**Out-of-Scope:**
+- User accounts and login systems.
+- Cloud-based synchronization.
+- Collaborative/Team features.
+- AI-driven task sorting or "smart" suggestions.
 
-## Success Metrics
-- **Zero-Leaked Packets:** 100% of task data remains encrypted during transit and at rest.
-- **User Trust Index:** Measured by retention within the niche privacy community and zero instances of data compromise.
-- **Native Performance:** Achievement of sub-100ms launch times to match the responsiveness of non-encrypted competitors.
-
-## Open Questions
-- **Sync Infrastructure:** Will we leverage user-owned storage (e.g., iCloud, personal WebDAV) or provide a dedicated encrypted relay?
-- **Business Model:** How do we sustain the project (one-time purchase vs. premium sync) without compromising our "No-Tracking" pledge?
+## Vision
+In 2-3 years, Greenfield aims to be the gold standard for "sovereign utilities"—a suite of essential tools (Calendar, Notes, Tasks) that prove high-end software doesn't need a cloud backend to be powerful. It will be the first choice for anyone building a "Personal Area Network" where they own every byte of their digital life.
