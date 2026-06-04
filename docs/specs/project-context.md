@@ -2,9 +2,9 @@
 project_name: 'Project Antigravity SDK'
 user_name: 'sumeetsing@gcp.altostrat.com'
 date: '2026-05-17'
-sections_completed: ['technology_stack', 'language_rules', 'framework_rules', 'testing_rules', 'style_rules', 'workflow_rules']
-status: 'in-progress'
-rule_count: 38
+sections_completed: ['technology_stack', 'language_rules', 'framework_rules', 'testing_rules', 'style_rules', 'workflow_rules', 'critical_rules']
+status: 'completed'
+rule_count: 45
 optimized_for_llm: true
 ---
 
@@ -93,7 +93,19 @@ _This file contains critical rules and patterns that AI agents must follow when 
 *   **Database Migrations:** All schema changes must be handled via migration files in `/migrations`. Never apply manual changes to the database.
 
 ### Critical Don't-Miss Rules
-_To be defined_
+
+**Anti-Patterns to Avoid:**
+*   **Hydration Mismatch:** Never use browser-only globals (like `window` or `localStorage`) in the top level of a Next.js component. Use `useEffect` or check `typeof window !== 'undefined'`.
+*   **Go Context Misuse:** Never store a `context.Context` inside a struct; always pass it as the first argument to functions.
+*   **Direct DB Access:** Components should never call the database directly. Use the defined service layer or API handlers.
+
+**Edge Cases & Security:**
+*   **Zod Safety:** Always use `.safeParse()` instead of `.parse()` when handling untrusted user input to prevent unhandled exceptions.
+*   **SQL Injection:** Never use `fmt.Sprintf` to build SQL queries. Always use parameterized queries with the Postgres driver.
+*   **RSC Closure:** Remember that Server Components cannot pass functions (like event handlers) as props to Client Components.
+
+**Performance:**
+*   **Large Objects in Props:** Avoid passing large, complex objects as props to Client Components in Next.js, as this increases the payload size of the initial HTML. Pass only the IDs or required fields.
 
 ---
 
