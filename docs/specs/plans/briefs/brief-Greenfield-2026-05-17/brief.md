@@ -8,55 +8,55 @@ updated: 2026-05-17
 # Product Brief: Greenfield
 
 ## Executive Summary
-Greenfield is a local-first, minimalist To Do application designed for individuals who refuse to trade their personal data for productivity. Unlike modern "SaaS" task managers, Greenfield operates entirely on-device, ensuring that your daily plans, habits, and secrets never leave your hardware.
+Greenfield is a local-first, minimalist task manager built for those who refuse to trade personal data for productivity. Unlike "Cloud-first" SaaS tools, Greenfield operates entirely on-device, ensuring that your daily plans, habits, and secrets never leave your hardware.
 
-By combining a distraction-free interface with a strictly offline architecture, Greenfield provides a sanctuary for focus. It is open-source, auditable, and built on the belief that a tool should serve the user, not the data broker.
+By combining a distraction-free interface with a strictly offline-first architecture, Greenfield provides a sanctuary for focus. It is open-source, auditable, and built on the belief that a tool should serve the user, not the data broker.
 
 ## The Problem
-Most modern productivity tools are "cloud-first," requiring user accounts and centralizing data on remote servers. This architecture introduces several points of failure:
-- **Privacy Erosion:** Personal tasks and routines are mined for metadata or exposed to data breaches.
-- **The "Cloud Tax":** Mandatory accounts, subscription models, and "syncing" lag that interrupts the flow of work.
-- **Feature Bloat:** Apps often include social features, AI suggestions, and complex project management tools that distract from the simple act of finishing a task.
+Modern productivity tools are built on a "Cloud-First" paradigm that centralizes private data on remote servers. This introduces:
+- **Privacy Erosion:** Personal tasks are mined for metadata or exposed in breaches.
+- **The "Cloud Tax":** Mandatory accounts, subscription lock-in, and network-induced lag.
+- **Feature Bloat:** Social features and "AI" suggestions that distract from the act of finishing work.
 
-[ASSUMPTION]: We are assuming users are increasingly frustrated by "productivity porn" and are looking for a "dumb but fast" tool that respects their agency.
+[ASSUMPTION]: Users are experiencing "Cloud Fatigue" and are willing to sacrifice cross-device sync for absolute data sovereignty and speed.
 
 ## The Solution
-A sleek, open-source utility that prioritizes speed and security. Greenfield is a GUI-based application that stores all data in a local, human-readable format.
-- **No Accounts:** Open the app and start typing.
-- **No Syncing:** Data stays on the device it was created on.
-- **Extreme Speed:** Because there is no network overhead, interactions are near-instant.
+A sovereign desktop utility that prioritizes speed and security above all else. Greenfield is a lightweight GUI application storing all data in human-readable local files.
+- **No Accounts:** Zero friction; open the app and start typing.
+- **No Network Dependencies:** Operation is identical whether you are in a bunker or a boardroom.
+- **Extreme Speed:** Near-instant interactions powered by a native, hardware-efficient core.
 
 ## What Makes This Different
-1. **Local-First by Design:** While other apps offer "offline mode" as a fallback, Greenfield treats the network as a non-entity.
-2. **Auditable Minimalism:** Being open-source allows the community to verify that no "phone-home" telemetry exists.
-3. **Intentional Constraints:** By intentionally omitting cloud sync, Greenfield forces a level of digital hygiene and focus that bloated alternatives cannot match.
-
-[ASSUMPTION]: We believe the "Open Source" tag acts as the primary trust-builder, replacing the need for corporate "Privacy Policy" legal-speak.
+1. **Local-Only by Design:** Greenfield treats the network as a non-entity, not just a fallback.
+2. **The "Data Manifesto":** Instead of a legalese Privacy Policy, the app includes a human-readable explanation of its architecture and a "Zero-Leak" guarantee.
+3. **Intentional Constraints:** By omitting cloud sync, Greenfield forces a level of digital hygiene that prevents "productivity porn" and bloat.
 
 ## Who This Serves
-- **Privacy Advocates:** Users who prioritize digital sovereignty and data ownership.
+- **Privacy Advocates:** Users who demand absolute data ownership.
 - **Minimalists:** Those seeking a "Zen" interface with zero distractions.
-- **High-Security Professionals:** Individuals (journalists, lawyers, developers) handling sensitive task descriptions that cannot risk cloud exposure.
+- **High-Security Professionals:** Journalists, lawyers, and researchers handling sensitive data that must remain air-gapped from the cloud.
 
 ## Success Criteria
-- **Performance:** App launch time < 150ms; UI interaction latency < 16ms.
-- **Zero Leakage:** 100% confirmation through community audit that no data packets are sent to external servers.
-- **Community Adoption:** High star-count and contribution rate on open-source platforms (GitHub/GitLab).
-- **Portability:** Users can easily export/import their task data in a standard format (e.g., JSON or Markdown).
+- **Performance:** App launch time < 150ms; UI interaction latency < 16ms (60fps).
+- **Security Audit:** 100% confirmation through community audit that no telemetry or data packets are sent to external servers.
+- **Data Portability:** 100% success rate for manual export/import between Linux, macOS, and Windows.
+- **Sustainability:** A self-sustaining community of at least 5 active core contributors within 12 months.
 
 ## Scope
 **In-Scope:**
-- Single-list and basic "Folder/Project" organization.
-- Task prioritization (High, Medium, Low).
-- Local-only notifications/reminders.
-- Manual data export/import (JSON/Markdown).
-- Cross-platform desktop support (Electron or Rust-based GUI).
+- **Technology:** Built using **Rust (Tauri)** for a native feel with minimal resource footprint. [ASSUMPTION]: Rust is chosen over Electron to meet the <150ms launch target and "Minimalist" brand promise.
+- **Organization:** Single-list and basic "Folder/Project" nesting.
+- **Prioritization:** Simple High/Medium/Low markers.
+- **Storage:** Data saved in a local SQLite or Markdown-based flat-file system.
+- **Reminders:** Local OS-level notifications only.
 
 **Out-of-Scope:**
-- User accounts and login systems.
-- Cloud-based synchronization.
-- Collaborative/Team features.
-- AI-driven task sorting or "smart" suggestions.
+- Cloud-based synchronization (Dropbox, Google Drive, etc.).
+- Multi-user collaboration.
+- Web version (Greenfield is a local binary).
+- AI-driven suggestions or natural language parsing (V1).
 
 ## Vision
-In 2-3 years, Greenfield aims to be the gold standard for "sovereign utilities"—a suite of essential tools (Calendar, Notes, Tasks) that prove high-end software doesn't need a cloud backend to be powerful. It will be the first choice for anyone building a "Personal Area Network" where they own every byte of their digital life.
+In 2-3 years, Greenfield becomes the cornerstone of a "Sovereign Utility Suite"—a set of essential tools (Calendar, Notes, Tasks) that prove high-end software doesn't need a cloud backend. Success means enabling users to build a "Personal Area Network" where they own every byte of their digital life. 
+
+[ASSUMPTION]: Long-term, we may explore encrypted, peer-to-peer (P2P) local network sync for users who need phone+laptop parity without the cloud.
