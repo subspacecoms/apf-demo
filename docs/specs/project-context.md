@@ -2,9 +2,9 @@
 project_name: 'Project Antigravity SDK'
 user_name: 'sumeetsing@gcp.altostrat.com'
 date: '2026-05-17'
-sections_completed: ['technology_stack']
+sections_completed: ['technology_stack', 'language_rules']
 status: 'in-progress'
-rule_count: 4
+rule_count: 8
 optimized_for_llm: true
 ---
 
@@ -24,7 +24,18 @@ _This file contains critical rules and patterns that AI agents must follow when 
 ## Critical Implementation Rules
 
 ### Language-Specific Rules
-_To be defined_
+
+**TypeScript (Frontend):**
+*   **Strict Mode:** Always enable `strict: true` in `tsconfig.json`.
+*   **No `any`:** Use of `any` is strictly prohibited. Use `unknown` or define specific interfaces/types.
+*   **Functional Patterns:** Prefer functional components and immutable data patterns.
+*   **Type Imports:** Use `import type` for type-only imports to optimize build bundles.
+
+**Go (Backend):**
+*   **Error Handling:** Never ignore errors. Use `if err != nil { return ... }`. Errors should be wrapped with context where appropriate.
+*   **Composition over Inheritance:** Use structs and interfaces for code reuse; avoid deep nesting.
+*   **Concurrency:** Use goroutines and channels sparingly and only when necessary. Ensure goroutine lifecycles are managed (avoid leaks).
+*   **Standard Library:** Prefer the standard library for HTTP handling and basic utilities before reaching for external dependencies.
 
 ### Framework-Specific Rules
 _To be defined_
