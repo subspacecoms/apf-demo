@@ -2,9 +2,9 @@
 project_name: 'Project Antigravity SDK'
 user_name: 'sumeetsing@gcp.altostrat.com'
 date: '2026-05-17'
-sections_completed: ['technology_stack', 'language_rules', 'framework_rules']
+sections_completed: ['technology_stack', 'language_rules', 'framework_rules', 'testing_rules']
 status: 'in-progress'
-rule_count: 15
+rule_count: 22
 optimized_for_llm: true
 ---
 
@@ -53,7 +53,17 @@ _This file contains critical rules and patterns that AI agents must follow when 
 *   **Graceful Shutdown:** All services must listen for `SIGINT`/`SIGTERM` and shut down the HTTP server and DB connections gracefully.
 
 ### Testing Rules
-_To be defined_
+
+**Frontend (Vitest / Testing Library):**
+*   **Component Testing:** Prefer testing behavior (what the user sees) over implementation details (internal state).
+*   **Hook Testing:** Use `renderHook` for complex custom hooks; keep hook logic pure and easy to test.
+*   **Mocking:** Use MSW (Mock Service Worker) for network-level mocking instead of manual fetch mocks.
+
+**Backend (Go Testing):**
+*   **Table-Driven Tests:** Use table-driven tests for all logic-heavy functions to ensure edge case coverage.
+*   **Integration Tests:** Use `testcontainers-go` for Postgres and Firestore integration tests to avoid manual DB setup.
+*   **Concurrency Tests:** Use the `-race` flag during test execution to catch data races early.
+*   **Interfaces for Mocks:** Ensure logic depends on interfaces so they can be easily mocked using `gomock` or manual stubs.
 
 ### Code Quality & Style Rules
 _To be defined_
