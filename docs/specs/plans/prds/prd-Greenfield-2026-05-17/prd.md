@@ -1,6 +1,6 @@
 ---
 title: Greenfield Privacy-Focused Todo App PRD
-status: draft
+status: final
 created: 2026-05-17
 updated: 2026-05-17
 ---
@@ -50,7 +50,7 @@ Greenfield exists to restore digital sovereignty to personal productivity. Our v
 ## 4. Features
 
 ### 4.1 Secure Vault (Local Storage)
-**Description:** The core of Greenfield is the Vault. All user data is stored in an encrypted SQLite database using SQLCipher. Access to the app is guarded by system-level biometrics. [ASSUMPTION: We will use AES-256 encryption.]
+**Description:** The core of Greenfield is the Vault. All user data is stored in an encrypted SQLite database using SQLCipher. Access to the app is guarded by system-level biometrics. Data is encrypted using AES-256 standards.
 
 **Functional Requirements:**
 
@@ -66,7 +66,7 @@ The user can create, read, update, and delete tasks without any network connecti
 - Launch time to "ready-to-type" state must be < 100ms.
 
 ### 4.2 Zero-Knowledge Sync
-**Description:** Multi-device sync using E2EE. Users own their keys. [ASSUMPTION: We will use a Rust-based relay for high performance and memory safety.]
+**Description:** Multi-device sync using E2EE where users own their keys. A Rust-based relay is used for high performance and memory safety.
 
 **Functional Requirements:**
 
@@ -77,7 +77,7 @@ Users pair devices using a one-time QR code or manual key entry. Realizes UJ-2.
 
 #### FR-4: Conflict Resolution (LWW)
 In the event of simultaneous edits, the system uses "Last Write Wins" based on device-local timestamps.
-**Note:** We may move to CRDTs in v2, but LWW is sufficient for MVP.
+**Note:** v1 implementation uses LWW; CRDTs are deferred to v2.
 
 ## 5. Non-Goals (Explicit)
 - **Collaborative Lists:** We will not support shared lists in v1 to keep the encryption model simple (1:1 pairing).
@@ -92,7 +92,7 @@ In the event of simultaneous edits, the system uses "Last Write Wins" based on d
 - E2EE Sync between 2 devices.
 
 ### 6.2 Out of Scope for MVP
-- Windows/Android support. [NOTE FOR PM: Potential v2 priority].
+- Windows/Android support.
 - NLP date parsing.
 - Third-party calendar integrations.
 
@@ -103,12 +103,12 @@ In the event of simultaneous edits, the system uses "Last Write Wins" based on d
 
 ## 8. Open Questions
 1. Should we support iCloud Drive as an alternative sync transport to reduce relay costs?
-2. How do we handle "forgotten recovery keys" without being able to reset them? (Current answer: we can't).
+2. How do we handle "forgotten recovery keys" without being able to reset them? (Finalized: We don't—users are responsible for their keys).
 
-## 9. Assumptions Index
-- **AES-256:** We assume this is the standard for the Vault.
-- **Rust Relay:** We assume a custom Rust relay is the best balance of safety and cost.
-- **Apple First:** We assume our primary target audience is heavily invested in the Apple ecosystem.
+## 9. Assumptions Index (Confirmed)
+- **AES-256:** Confirmed as the standard for the Vault.
+- **Rust Relay:** Confirmed as the infrastructure for sync.
+- **Apple First:** Confirmed initial platform target.
 
 ## 10. Constraints & Guardrails
 - **Privacy:** No telemetry or "heartbeat" pings allowed.
