@@ -2,9 +2,9 @@
 project_name: 'Project Antigravity SDK'
 user_name: 'sumeetsing@gcp.altostrat.com'
 date: '2026-05-17'
-sections_completed: ['technology_stack', 'language_rules', 'framework_rules', 'testing_rules', 'style_rules']
+sections_completed: ['technology_stack', 'language_rules', 'framework_rules', 'testing_rules', 'style_rules', 'workflow_rules']
 status: 'in-progress'
-rule_count: 32
+rule_count: 38
 optimized_for_llm: true
 ---
 
@@ -81,7 +81,16 @@ _This file contains critical rules and patterns that AI agents must follow when 
 *   **Receiver Naming:** Use short, consistent names for method receivers (e.g., `s` for `Service`).
 
 ### Development Workflow Rules
-_To be defined_
+
+**Git & Version Control:**
+*   **Branch Naming:** Use `feat/`, `fix/`, `docs/`, or `refactor/` prefixes (e.g., `feat/auth-implementation`).
+*   **Commit Messages:** Follow Conventional Commits (e.g., `feat(ui): add primary button component`).
+*   **Small PRs:** Keep PRs focused on a single logical change. If a task is large, break it into multiple PRs.
+
+**Deployment & Environment:**
+*   **Environment Variables:** Never hardcode secrets. Use `.env.example` to document required variables.
+*   **Build Check:** Always run `npm run build` or `go build` locally before pushing to ensure no build-breaking changes.
+*   **Database Migrations:** All schema changes must be handled via migration files in `/migrations`. Never apply manual changes to the database.
 
 ### Critical Don't-Miss Rules
 _To be defined_
