@@ -14,8 +14,26 @@ _This file contains critical rules and patterns that AI agents must follow when 
 
 ## Technology Stack & Versions
 
-_Documented after discovery phase_
+*   **Project State:** Greenfield (Initial Setup)
+*   **Primary Technologies:** Not yet defined
+*   **Key Dependencies:** Not yet defined
 
 ## Critical Implementation Rules
 
-_Documented after discovery phase_
+### Language-Specific Rules
+_To be defined_
+
+### Framework-Specific Rules
+_To be defined_
+
+### Testing Rules
+_To be defined_
+
+### Code Quality & Style Rules
+_To be defined_
+
+### Development Workflow Rules
+_To be defined_
+
+### Critical Don't-Miss Rules
+_To be defined_
