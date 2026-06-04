@@ -2,9 +2,9 @@
 project_name: 'Project Antigravity SDK'
 user_name: 'sumeetsing@gcp.altostrat.com'
 date: '2026-05-17'
-sections_completed: ['technology_stack', 'language_rules', 'framework_rules', 'testing_rules']
+sections_completed: ['technology_stack', 'language_rules', 'framework_rules', 'testing_rules', 'style_rules']
 status: 'in-progress'
-rule_count: 22
+rule_count: 32
 optimized_for_llm: true
 ---
 
@@ -66,7 +66,19 @@ _This file contains critical rules and patterns that AI agents must follow when 
 *   **Interfaces for Mocks:** Ensure logic depends on interfaces so they can be easily mocked using `gomock` or manual stubs.
 
 ### Code Quality & Style Rules
-_To be defined_
+
+**General Conventions:**
+*   **Naming:** Use `kebab-case` for file names and `PascalCase` for React components. For Go, use `camelCase` for internal and `PascalCase` for exported identifiers.
+*   **DRY vs AHA:** Avoid Premature Abstraction. Prefer "Avoid Hasty Abstractions" (AHA) — let a pattern emerge before abstracting.
+*   **Comments:** Use comments to explain *why* something is done, not *what* is being done. Code should be self-documenting for the "what".
+
+**Frontend Specific:**
+*   **Barrel Imports:** Avoid barrel files (`index.ts`) as they can lead to circular dependencies and slower build times in Next.js.
+*   **Component Structure:** One component per file. Move sub-components to a `components/` sub-directory if they are specific to a page.
+
+**Backend Specific:**
+*   **Small Packages:** Keep Go packages small and focused on a single responsibility.
+*   **Receiver Naming:** Use short, consistent names for method receivers (e.g., `s` for `Service`).
 
 ### Development Workflow Rules
 _To be defined_
