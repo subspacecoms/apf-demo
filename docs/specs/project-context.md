@@ -2,8 +2,10 @@
 project_name: 'Globo Listings'
 user_name: 'sumeetsing@gcp.altostrat.com'
 date: '2025-05-17'
-sections_completed: ['technology_stack', 'language_rules', 'framework_rules', 'testing_rules']
-existing_patterns_found: 0
+sections_completed: ['technology_stack', 'language_rules', 'framework_rules', 'testing_rules', 'code_quality_rules']
+status: 'complete'
+rule_count: 26
+optimized_for_llm: true
 ---
 
 # Project Context for AI Agents
@@ -53,3 +55,33 @@ _This file contains critical rules and patterns that AI agents must follow when 
 - **Frontend:** Every new component must have a corresponding `.test.tsx` file using React Testing Library.
 - **Integration:** Use a local or containerized PostgreSQL instance for integration tests rather than mocking the database entirely where possible.
 - **Firebase:** Use the Firebase Emulator Suite for local testing of Firestore and Auth rules.
+
+### Code Quality & Style Rules
+
+- **Naming Conventions:**
+  - React Components: `PascalCase`
+  - Functions/Variables: `camelCase`
+  - Go Exports: `PascalCase`
+  - Files: `kebab-case` for frontend (e.g., `user-profile.tsx`), standard Go patterns for backend.
+- **Organization:** Use a feature-based organization. Keep related hooks, components, and types close to the feature they support.
+- **Documentation:** Use TSDoc/JSDoc for complex frontend logic and standard Go doc comments for exported backend functions.
+
+---
+
+## Usage Guidelines
+
+**For AI Agents:**
+
+- Read this file before implementing any code
+- Follow ALL rules exactly as documented
+- When in doubt, prefer the more restrictive option
+- Update this file if new patterns emerge
+
+**For Humans:**
+
+- Keep this file lean and focused on agent needs
+- Update when technology stack changes
+- Review quarterly for outdated rules
+- Remove rules that become obvious over time
+
+Last Updated: 2025-05-17
