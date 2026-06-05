@@ -2,7 +2,7 @@
 project_name: 'Globo Listings'
 user_name: 'sumeetsing@gcp.altostrat.com'
 date: '2025-05-17'
-sections_completed: ['technology_stack']
+sections_completed: ['technology_stack', 'language_rules']
 existing_patterns_found: 0
 ---
 
@@ -21,3 +21,17 @@ _This file contains critical rules and patterns that AI agents must follow when 
 - **Version Constraints:** Ensure compatibility between Firebase JS SDK and Next.js SSR.
 
 ---
+
+## Critical Implementation Rules
+
+### Language-Specific Rules
+
+#### Go
+- Follow standard `gofmt` patterns.
+- Explicit error handling is mandatory; do not use `panic` for flow control.
+- Use context for timeout and cancellation management in API calls.
+
+#### TypeScript/JavaScript
+- Use absolute imports with the `@/` prefix.
+- Enforce strict typing; avoid the `any` type.
+- Use functional components and hooks for all React code.
