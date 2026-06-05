@@ -1,7 +1,7 @@
 ---
-project_name: 'Greenfield'
+project_name: 'Globo Listings'
 user_name: 'sumeetsing@gcp.altostrat.com'
-date: '2024-05-22'
+date: '2025-05-17'
 sections_completed: ['technology_stack']
 existing_patterns_found: 0
 ---
