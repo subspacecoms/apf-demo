@@ -2,7 +2,7 @@
 project_name: 'Globo Listings'
 user_name: 'sumeetsing@gcp.altostrat.com'
 date: '2025-05-17'
-sections_completed: ['technology_stack', 'language_rules', 'framework_rules']
+sections_completed: ['technology_stack', 'language_rules', 'framework_rules', 'testing_rules']
 existing_patterns_found: 0
 ---
 
@@ -46,3 +46,10 @@ _This file contains critical rules and patterns that AI agents must follow when 
 #### Firebase
 - Initialize Firebase apps using a singleton pattern to prevent multiple initialization errors during Hot Module Replacement (HMR).
 - Use Firebase Admin SDK strictly for server-side operations (API routes, Server Components).
+
+### Testing Rules
+
+- **Go:** Use table-driven tests for logic with multiple edge cases. Keep tests in `_test.go` files in the same package.
+- **Frontend:** Every new component must have a corresponding `.test.tsx` file using React Testing Library.
+- **Integration:** Use a local or containerized PostgreSQL instance for integration tests rather than mocking the database entirely where possible.
+- **Firebase:** Use the Firebase Emulator Suite for local testing of Firestore and Auth rules.
