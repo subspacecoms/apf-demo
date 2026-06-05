@@ -2,7 +2,7 @@
 project_name: 'Globo Listings'
 user_name: 'sumeetsing@gcp.altostrat.com'
 date: '2025-05-17'
-sections_completed: ['technology_stack', 'language_rules']
+sections_completed: ['technology_stack', 'language_rules', 'framework_rules']
 existing_patterns_found: 0
 ---
 
@@ -35,3 +35,14 @@ _This file contains critical rules and patterns that AI agents must follow when 
 - Use absolute imports with the `@/` prefix.
 - Enforce strict typing; avoid the `any` type.
 - Use functional components and hooks for all React code.
+
+### Framework-Specific Rules
+
+#### Next.js (App Router)
+- Favor Server Components for data fetching to reduce client-side bundle size.
+- Use the `app/` directory for routing and layouts.
+- Handle loading states using `loading.tsx` files.
+
+#### Firebase
+- Initialize Firebase apps using a singleton pattern to prevent multiple initialization errors during Hot Module Replacement (HMR).
+- Use Firebase Admin SDK strictly for server-side operations (API routes, Server Components).
