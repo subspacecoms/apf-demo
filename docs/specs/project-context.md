@@ -1,8 +1,8 @@
 ---
-project_name: 'Greenfield'
+project_name: 'Remote Field'
 user_name: 'sumeetsing@gcp.altostrat.com'
 date: '2026-05-17'
-sections_completed: []
+sections_completed: ['technology_stack']
 existing_patterns_found: 0
 ---
 
@@ -14,7 +14,10 @@ _This file contains critical rules and patterns that AI agents must follow when 
 
 ## Technology Stack & Versions
 
-_Documented after discovery phase_
+- **Frontend:** Next.js (App Router preferred)
+- **Backend:** Go (Golang)
+- **Authentication/Services:** Firebase
+- **Database:** PostgreSQL
 
 ## Critical Implementation Rules
 
