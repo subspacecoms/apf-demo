@@ -1,5 +1,5 @@
 ---
-project_name: 'Remote Field'
+project_name: 'Brownfield'
 user_name: 'sumeetsing@gcp.altostrat.com'
 date: '2026-05-17'
 sections_completed:
@@ -10,10 +10,10 @@ sections_completed:
     'testing_rules',
     'quality_rules',
     'workflow_rules',
-    'anti_patterns',
+    'critical_rules',
   ]
 status: 'complete'
-rule_count: 22
+rule_count: 26
 optimized_for_llm: true
 ---
 
@@ -25,68 +25,69 @@ optimized_for_llm: true
 
 ## Technology Stack & Versions
 
-- **Frontend:** Next.js (App Router preferred)
+- **Frontend:** Next.js (App Router)
 - **Backend:** Go (Golang)
-- **Authentication/Services:** Firebase
+- **Authentication:** Firebase (Client & Admin SDK)
 - **Database:** PostgreSQL
+- **Testing:** React Testing Library (Frontend), Go internal testing (Backend)
 
 ## Critical Implementation Rules
 
 ### Language-Specific Rules
 
 **Go (Backend):**
-- **Error Handling:** Always check errors explicitly. Wrap errors with context using `fmt.Errorf("context: %w", err)`.
-- **Concurrency:** Use channels for communication; avoid shared memory. Ensure goroutines are context-aware.
-- **Interface Usage:** Accept interfaces, return structs. Keep interfaces small and focused.
+- **Error Handling:** Explicit checks required. Use `fmt.Errorf("...: %w", err)` to preserve the error chain.
+- **Concurrency:** Prefer channels over shared memory. All long-running processes must respect `ctx.Done()`.
+- **Interfaces:** Define interfaces where they are used (consumer-side) rather than where they are implemented.
 
-**TypeScript/JavaScript (Frontend):**
-- **Strict Typing:** Use TypeScript's `strict` mode. Avoid `any`; use `unknown` if necessary.
-- **Async/Await:** Prefer `async/await` over raw Promises. Use `Promise.allSettled` for parallel operations.
-- **Immutability:** Use `const` by default. Use spread operators for state updates.
+**TypeScript (Frontend):**
+- **Type Safety:** No `any`. Use discriminated unions for complex state/responses.
+- **Modern Syntax:** Prefer `async/await`. Use Optional Chaining (`?.`) and Nullish Coalescing (`??`) for cleaner null checks.
 
 ### Framework-Specific Rules
 
 **Next.js (App Router):**
-- **Server Components:** Default to Server Components. Use `'use client'` only when necessary.
-- **Data Fetching:** Use `fetch` in Server Components with appropriate caching tags.
-- **Routing:** Follow file-system based routing strictly (`layout.tsx`, `page.tsx`).
-- **Mutations:** Use Server Actions for data mutations.
+- **Architecture:** Default to Server Components. Colocate components, hooks, and types within the feature folder.
+- **Data:** Use `fetch` with Next.js extended options (tags/revalidation).
+- **Forms:** Prefer Server Actions over client-side API calls for simple mutations.
 
-**Firebase Integration:**
-- **Auth State:** Monitor auth state via `onAuthStateChanged` on the client.
-- **Backend Auth:** Verify Firebase ID tokens in the Go backend using the Firebase Admin SDK.
-- **Security Rules:** All access must be governed by backend or Firebase security rules.
+**Firebase:**
+- **Identity:** Always extract and verify the UID from the Firebase Token in the backend context.
+- **Client Side:** Use `onAuthStateChanged` to manage local UI state only.
 
 ### Testing Rules
 
 **Go (Backend):**
-- **Unit Tests:** Place in same package (e.g., `service_test.go`). Use table-driven tests.
-- **Mocking:** Use interfaces to mock external dependencies.
+- **Style:** Use table-driven tests for all business logic.
+- **Naming:** Test functions must be descriptive (e.g., `TestCalculateTotal_DiscountApplied`).
+- **Dependencies:** Use interfaces for dependency injection to facilitate easy mocking.
 
 **Frontend:**
-- **Component Testing:** Use React Testing Library focusing on user behavior.
-- **Mocks:** Use emulators or mocks for Firebase/PostgreSQL during tests.
+- **Strategy:** Prioritize Integration tests over high-unit-test-coverage for UI.
+- **Tools:** Use Vitest/Jest with React Testing Library. Mock API calls using MSW (Mock Service Worker) if applicable.
 
 ### Code Quality & Style Rules
 
 - **Naming:** 
-  - Frontend: `kebab-case.ts`, `PascalCase.tsx`.
-  - Backend: `snake_case.go`.
-  - General: `camelCase` for variables/functions.
-- **Organization:** Feature-based organization for frontend; `internal` directory for Go.
-- **Formatting:** Pass `eslint`/`prettier` (frontend) and `gofmt`/`goimports` (backend).
+  - TS/JS: `kebab-case` files, `PascalCase` components, `camelCase` variables.
+  - Go: `snake_case` files, `PascalCase` for exports, `camelCase` for internals.
+- **Organization:** Group by feature rather than type (e.g., put `AuthButton.tsx` and `useAuth.ts` in the same feature folder).
+- **Linting:** Code must pass `golangci-lint` (backend) and `eslint` (frontend) without warnings.
+- **Documentation:** Use JSDoc for complex TS functions and standard Go doc comments for exported symbols.
 
 ### Development Workflow Rules
 
-- **Branching:** Use descriptive branch names (e.g., `feat/`, `fix/`).
-- **Commits:** Follow conventional commit messages.
-- **PRs:** Ensure all tests pass and linting is clean before PR submission.
+- **Branching:** Descriptive branch names required (e.g., `feat/feature-name`, `fix/issue-id`).
+- **Commits:** Mandatory use of Conventional Commits format.
+- **PRs:** No PR should be submitted with linting errors or failing tests. Provide a clear description of changes and links to relevant tasks.
+- **Deployment:** The backend must be deployable independently of the frontend. Ensure backwards compatibility for API changes during transition periods.
 
 ### Critical Don't-Miss Rules
 
-- **Security:** Never expose Firebase Admin keys or database credentials in client-side code.
-- **Performance:** Avoid unnecessary re-renders in React; optimize Go SQL queries to avoid N+1 problems.
-- **Anti-Patterns:** Do not bypass the Go backend for database writes; use the backend as the single source of truth.
+- **Security:** Always verify Firebase ID tokens in the backend context. Never hardcode secrets; use environment variables.
+- **Anti-Pattern:** Avoid using the Firebase Client SDK for direct database writes if those writes require business logic validation—route them through the Go API.
+- **Concurrency:** In Go, never start a goroutine without a way to stop it (leaked goroutines). Use `context.WithCancel` or `context.WithTimeout`.
+- **State:** In Next.js, do not use `localStorage` for authentication state; rely on the Firebase Auth cookie/token and Server Components for initial state.
 
 ---
 
