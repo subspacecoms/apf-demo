@@ -8,6 +8,7 @@ sections_completed:
     'language_rules',
     'framework_rules',
     'testing_rules',
+    'quality_rules',
   ]
 status: 'in_progress'
 rule_count: 22
@@ -62,3 +63,12 @@ optimized_for_llm: true
 **Frontend:**
 - **Strategy:** Prioritize Integration tests over high-unit-test-coverage for UI.
 - **Tools:** Use Vitest/Jest with React Testing Library. Mock API calls using MSW (Mock Service Worker) if applicable.
+
+### Code Quality & Style Rules
+
+- **Naming:** 
+  - TS/JS: `kebab-case` files, `PascalCase` components, `camelCase` variables.
+  - Go: `snake_case` files, `PascalCase` for exports, `camelCase` for internals.
+- **Organization:** Group by feature rather than type (e.g., put `AuthButton.tsx` and `useAuth.ts` in the same feature folder).
+- **Linting:** Code must pass `golangci-lint` (backend) and `eslint` (frontend) without warnings.
+- **Documentation:** Use JSDoc for complex TS functions and standard Go doc comments for exported symbols.
