@@ -9,6 +9,7 @@ sections_completed:
     'framework_rules',
     'testing_rules',
     'quality_rules',
+    'workflow_rules',
   ]
 status: 'in_progress'
 rule_count: 22
@@ -72,3 +73,10 @@ optimized_for_llm: true
 - **Organization:** Group by feature rather than type (e.g., put `AuthButton.tsx` and `useAuth.ts` in the same feature folder).
 - **Linting:** Code must pass `golangci-lint` (backend) and `eslint` (frontend) without warnings.
 - **Documentation:** Use JSDoc for complex TS functions and standard Go doc comments for exported symbols.
+
+### Development Workflow Rules
+
+- **Branching:** Descriptive branch names required (e.g., `feat/feature-name`, `fix/issue-id`).
+- **Commits:** Mandatory use of Conventional Commits format.
+- **PRs:** No PR should be submitted with linting errors or failing tests. Provide a clear description of changes and links to relevant tasks.
+- **Deployment:** The backend must be deployable independently of the frontend. Ensure backwards compatibility for API changes during transition periods.
