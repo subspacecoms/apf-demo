@@ -10,9 +10,10 @@ sections_completed:
     'testing_rules',
     'quality_rules',
     'workflow_rules',
+    'critical_rules',
   ]
-status: 'in_progress'
-rule_count: 22
+status: 'complete'
+rule_count: 26
 optimized_for_llm: true
 ---
 
@@ -80,3 +81,27 @@ optimized_for_llm: true
 - **Commits:** Mandatory use of Conventional Commits format.
 - **PRs:** No PR should be submitted with linting errors or failing tests. Provide a clear description of changes and links to relevant tasks.
 - **Deployment:** The backend must be deployable independently of the frontend. Ensure backwards compatibility for API changes during transition periods.
+
+### Critical Don't-Miss Rules
+
+- **Security:** Always verify Firebase ID tokens in the backend context. Never hardcode secrets; use environment variables.
+- **Anti-Pattern:** Avoid using the Firebase Client SDK for direct database writes if those writes require business logic validation—route them through the Go API.
+- **Concurrency:** In Go, never start a goroutine without a way to stop it (leaked goroutines). Use `context.WithCancel` or `context.WithTimeout`.
+- **State:** In Next.js, do not use `localStorage` for authentication state; rely on the Firebase Auth cookie/token and Server Components for initial state.
+
+---
+
+## Usage Guidelines
+
+**For AI Agents:**
+- Read this file before implementing any code.
+- Follow ALL rules exactly as documented.
+- When in doubt, prefer the more restrictive option.
+- Update this file if new patterns emerge.
+
+**For Humans:**
+- Keep this file lean and focused on agent needs.
+- Update when technology stack changes.
+- Review quarterly for outdated rules.
+
+Last Updated: 2026-05-17
