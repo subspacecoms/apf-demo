@@ -1,7 +1,7 @@
 ---
-project_name: 'Brownfield'
+project_name: 'Rx Portal'
 user_name: 'sumeetsing@gcp.altostrat.com'
-date: '2026-05-17'
+date: '2025-01-24'
 sections_completed:
   [
     'technology_stack',
@@ -10,98 +10,118 @@ sections_completed:
     'testing_rules',
     'quality_rules',
     'workflow_rules',
-    'critical_rules',
+    'anti_patterns',
   ]
 status: 'complete'
-rule_count: 26
+rule_count: 36
 optimized_for_llm: true
 ---
 
 # Project Context for AI Agents
 
-*This file contains critical rules and patterns that AI agents must follow when implementing code in this project. Focus on unobvious details that agents might otherwise miss.*
+_This file contains critical rules and patterns that AI agents must follow when implementing code in this project. Focus on unobvious details that agents might otherwise miss._
 
 ---
 
 ## Technology Stack & Versions
 
-- **Frontend:** Next.js (App Router)
-- **Backend:** Go (Golang)
-- **Authentication:** Firebase (Client & Admin SDK)
-- **Database:** PostgreSQL
-- **Testing:** React Testing Library (Frontend), Go internal testing (Backend)
+- **Cloud Provider:** Google Cloud Platform (GCP)
+- **Backend:** Go (GoLang) 1.21+
+- **Frontend:** Next.js (App Router preferred) with TypeScript
+- **Database (NoSQL):** Google Cloud Firestore
+- **Database (Relational):** PostgreSQL via Google Cloud SQL
+- **Runtime:** Go and Node.js 20.x (LTS)
 
 ## Critical Implementation Rules
 
 ### Language-Specific Rules
 
-**Go (Backend):**
-- **Error Handling:** Explicit checks required. Use `fmt.Errorf("...: %w", err)` to preserve the error chain.
-- **Concurrency:** Prefer channels over shared memory. All long-running processes must respect `ctx.Done()`.
-- **Interfaces:** Define interfaces where they are used (consumer-side) rather than where they are implemented.
+#### Go (Backend)
+- **Error Handling**: Explicitly check all errors. Use `%w` for error wrapping to preserve the error chain.
+- **Concurrency**: Use channels and goroutines sparingly; ensure goroutines are properly managed and terminated via `context`.
+- **Formatting**: Strictly follow `gofmt` and `goimports`.
 
-**TypeScript (Frontend):**
-- **Type Safety:** No `any`. Use discriminated unions for complex state/responses.
-- **Modern Syntax:** Prefer `async/await`. Use Optional Chaining (`?.`) and Nullish Coalescing (`??`) for cleaner null checks.
+#### TypeScript & Next.js (Frontend)
+- **Type Safety**: No use of `any`. Define interfaces for all API responses and component props.
+- **Server Components**: Default to Server Components; use `'use client'` only when client-side interactivity or hooks are required.
+- **Import Ordering**: Group imports: React/Next.js, external libraries, internal aliases (`@/`), and local relative paths.
 
 ### Framework-Specific Rules
 
-**Next.js (App Router):**
-- **Architecture:** Default to Server Components. Colocate components, hooks, and types within the feature folder.
-- **Data:** Use `fetch` with Next.js extended options (tags/revalidation).
-- **Forms:** Prefer Server Actions over client-side API calls for simple mutations.
+#### Backend (Go + GCP)
+- **Database Access**: Use the official `cloud.google.com/go/firestore` for Firestore and `github.com/lib/pq` (or `pgx`) for PostgreSQL.
+- **Configuration**: Load configuration from environment variables. Never hardcode GCP Project IDs or credentials.
+- **API Design**: Follow RESTful principles. Use JSON for request and response bodies.
 
-**Firebase:**
-- **Identity:** Always extract and verify the UID from the Firebase Token in the backend context.
-- **Client Side:** Use `onAuthStateChanged` to manage local UI state only.
+#### Frontend (Next.js + Tailwind)
+- **Next.js App Router**: Use `layout.tsx` for persistent UI and `page.tsx` for unique route content. 
+- **Tailwind CSS**: Use consistent spacing and color palettes as defined in `tailwind.config.ts`.
+- **Environment Variables**: Prefix client-side environment variables with `NEXT_PUBLIC_`.
 
 ### Testing Rules
 
-**Go (Backend):**
-- **Style:** Use table-driven tests for all business logic.
-- **Naming:** Test functions must be descriptive (e.g., `TestCalculateTotal_DiscountApplied`).
-- **Dependencies:** Use interfaces for dependency injection to facilitate easy mocking.
+#### Go (Backend)
+- **Table-Driven Tests**: Preferred for unit tests to ensure all edge cases are covered systematically.
+- **Mocking External Services**: Create interfaces for database and API clients to allow for easy mocking in unit tests.
+- **Integration Tests**: Place integration tests in a separate directory (e.g., `/internal/integration`) and tag them with `// +build integration`.
 
-**Frontend:**
-- **Strategy:** Prioritize Integration tests over high-unit-test-coverage for UI.
-- **Tools:** Use Vitest/Jest with React Testing Library. Mock API calls using MSW (Mock Service Worker) if applicable.
+#### TypeScript & Next.js (Frontend)
+- **React Testing Library**: Focus on testing behavior and accessibility rather than implementation details.
+- **File Organization**: Place tests next to the component they test (e.g., `Component.tsx` and `Component.test.tsx`).
+- **Data Mocking**: Use consistent mock data structures that match the TypeScript interfaces defined for the project.
 
 ### Code Quality & Style Rules
 
-- **Naming:** 
-  - TS/JS: `kebab-case` files, `PascalCase` components, `camelCase` variables.
-  - Go: `snake_case` files, `PascalCase` for exports, `camelCase` for internals.
-- **Organization:** Group by feature rather than type (e.g., put `AuthButton.tsx` and `useAuth.ts` in the same feature folder).
-- **Linting:** Code must pass `golangci-lint` (backend) and `eslint` (frontend) without warnings.
-- **Documentation:** Use JSDoc for complex TS functions and standard Go doc comments for exported symbols.
+- **Linting**:
+  - **Backend**: Use `golangci-lint` with the default set of enabled linters.
+  - **Frontend**: Strictly follow the project's `.eslintrc` and `.prettierrc` configurations.
+- **Naming Conventions**:
+  - **Go**: Use short, descriptive names for local variables (e.g., `ctx`, `err`, `req`).
+  - **React/TS**: Component files should use PascalCase (e.g., `UserDashboard.tsx`). Hook files should use camelCase and start with `use` (e.g., `useAuth.ts`).
+- **Organization**:
+  - Keep functions and components small and focused on a single responsibility.
+  - Avoid deeply nested logic; use early returns (guard clauses) to reduce nesting.
 
 ### Development Workflow Rules
 
-- **Branching:** Descriptive branch names required (e.g., `feat/feature-name`, `fix/issue-id`).
-- **Commits:** Mandatory use of Conventional Commits format.
-- **PRs:** No PR should be submitted with linting errors or failing tests. Provide a clear description of changes and links to relevant tasks.
-- **Deployment:** The backend must be deployable independently of the frontend. Ensure backwards compatibility for API changes during transition periods.
+- **Git Conventions**:
+  - **Branch Naming**: `feat/`, `fix/`, `docs/`, or `refactor/` followed by a descriptive name.
+  - **Commits**: **MANDATORY** use of [Conventional Commits](https://www.conventionalcommits.org/) (e.g., `feat:`, `fix:`, `chore:`, `refactor:`).
+- **CI/CD Patterns**:
+  - **Triggers**: Every push to a feature branch must trigger a CI build (linting and testing).
+  - **Deployment**: Provide an option for on-demand deployment of feature branches for preview/testing purposes.
+  - **Validation**: All Go code must pass `go test ./...` and frontend must pass `npm run build` before merge.
+- **Deployment**:
+  - **Backend**: Containerized via Docker and deployed to Google Cloud Run.
+  - **Frontend**: Next.js optimized build deployed to Google Cloud Run or Firebase Hosting.
 
 ### Critical Don't-Miss Rules
 
-- **Security:** Always verify Firebase ID tokens in the backend context. Never hardcode secrets; use environment variables.
-- **Anti-Pattern:** Avoid using the Firebase Client SDK for direct database writes if those writes require business logic validation—route them through the Go API.
-- **Concurrency:** In Go, never start a goroutine without a way to stop it (leaked goroutines). Use `context.WithCancel` or `context.WithTimeout`.
-- **State:** In Next.js, do not use `localStorage` for authentication state; rely on the Firebase Auth cookie/token and Server Components for initial state.
+- **Anti-Patterns to Avoid**:
+  - **Hardcoding**: Never hardcode GCP credentials or API keys. Use Google Secret Manager or environment variables.
+  - **Leaking Secrets**: Ensure `.gitignore` explicitly excludes `.env`, `*.pem`, and `service-account-keys.json`.
+- **Resource Management**:
+  - **Go**: Always use `defer rows.Close()` and `defer resp.Body.Close()` immediately after checking for errors.
+  - **Firestore**: Be mindful of read/write costs; avoid unnecessary document fetches in loops.
+- **Next.js Hydration**: Ensure components are hydration-safe; avoid using browser-only globals (like `window` or `localStorage`) directly in the component body without checking for `mount`.
+- **GCP Compliance**: All resources must be provisioned in the same GCP region (e.g., `us-central1`) to minimize latency and egress costs.
 
 ---
 
 ## Usage Guidelines
 
 **For AI Agents:**
+
 - Read this file before implementing any code.
 - Follow ALL rules exactly as documented.
 - When in doubt, prefer the more restrictive option.
 - Update this file if new patterns emerge.
 
 **For Humans:**
-- Keep this file lean and focused on agent needs.
-- Update when technology stack changes.
-- Review quarterly for outdated rules.
 
-Last Updated: 2026-05-17
+- Keep this file lean and focused on agent needs.
+- Update when the technology stack changes.
+- Review quarterly for outdated rules.
+- Remove rules that become obvious over time.
+
+Last Updated: 2025-01-24
