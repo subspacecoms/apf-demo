@@ -3,7 +3,9 @@ project_name: 'Casas Bhaia'
 user_name: 'accounts.google.com:107764536614723260958'
 date: '2024-05-17'
 sections_completed: ['technology_stack', 'language_specific_rules', 'framework_specific_rules', 'testing_rules', 'code_quality_rules', 'workflow_rules', 'critical_dont_miss_rules']
-existing_patterns_found: 0
+status: 'complete'
+rule_count: 28
+optimized_for_llm: true
 ---
 
 # Project Context for AI Agents
@@ -90,3 +92,23 @@ _This file contains critical rules and patterns that AI agents must follow when 
 - **Performance Gotcha: N+1 Queries**: Avoid fetching data in a loop. Use JOINs or batched queries when interacting with PostgreSQL.
 - **Next.js/Express Boundary**: Do not duplicate business logic. If logic is shared between the frontend and the Express middleware, it must live in `src/shared/` or a dedicated service layer.
 - **Cloud SQL Connectivity**: Ensure that the Cloud SQL Auth Proxy is correctly configured or that IAM database authentication is used for secure production connections.
+
+---
+
+## Usage Guidelines
+
+**For AI Agents:**
+
+- Read this file before implementing any code.
+- Follow ALL rules exactly as documented.
+- When in doubt, prefer the more restrictive option.
+- Update this file if new patterns emerge.
+
+**For Humans:**
+
+- Keep this file lean and focused on agent needs.
+- Update when technology stack changes.
+- Review quarterly for outdated rules.
+- Remove rules that become obvious over time.
+
+Last Updated: 2024-05-17
