@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1, 2, 3, 4]
+stepsCompleted: [1, 2, 3, 4, 5]
 inputDocuments:
   - "docs/specs/plans/prds/prd-Casas-Bahia-2025-05-19/prd.md"
   - "docs/specs/plans/briefs/brief-Casas-Bahia-2026-05-17/brief.md"
@@ -159,3 +159,73 @@ Remote caching for builds and tests; centralized linting (ESLint) and formatting
 **Cross-Component Dependencies:**
 - The **Express API** depends on **Shared Zod Schemas** for request validation.
 - **Next.js Server Actions** depend on the **Express API** for data mutations to maintain the decoupling boundary.
+
+## Implementation Patterns & Consistency Rules
+
+### Pattern Categories Defined
+
+**Critical Conflict Points Identified:**
+**8** areas where AI agents could make different choices (Naming, API structure, Database conventions, Shared Types, Error Handling, Loading states, Test organization, and Infrastructure patterns).
+
+### Naming Patterns
+
+**Database Naming Conventions:**
+- **Tables:** `plural_snake_case` (e.g., `user_accounts`, `payment_transactions`).
+- **Columns:** `snake_case` (e.g., `updated_at`, `is_active`).
+- **Foreign Keys:** `singular_table_name_id` (e.g., `user_account_id`).
+
+**API Naming Conventions:**
+- **Endpoints:** `plural-kebab-case` with `/api/v1/` prefix (e.g., `/api/v1/order-history`).
+- **Query Params:** `camelCase` (e.g., `?orderId=123`).
+
+**Code Naming Conventions:**
+- **Components/Types/Interfaces:** `PascalCase` (e.g., `PaymentForm`, `UserAccount`).
+- **Functions/Variables:** `camelCase` (e.g., `calculateTotal`, `isProcessing`).
+- **Files:** `kebab-case.tsx` or `kebab-case.ts` (e.g., `order-list.tsx`).
+
+### Structure Patterns
+
+**Project Organization:**
+- **Feature-First:** Group logic by domain in `src/features/[feature-name]`.
+- **Shared Package:** All cross-boundary validation and shared types MUST reside in `packages/shared`.
+
+**File Structure Patterns:**
+- **Co-location:** Tests and styles must live next to the implementation (e.g., `button.tsx`, `button.test.tsx`, `button.module.css`).
+
+### Format Patterns
+
+**API Response Formats:**
+- **Standard Envelope:** 
+  - Success: `{ "success": true, "data": { ... }, "error": null }`
+  - Error: `{ "success": false, "data": null, "error": { "code": "STRING_CODE", "message": "User-friendly message" } }`
+
+**Data Exchange Formats:**
+- **JSON Fields:** `camelCase` (consistent with TypeScript objects).
+- **Dates:** `ISO 8601` strings.
+
+### Communication Patterns
+
+**Event System Patterns:**
+- **Naming:** `domain.event.action` (e.g., `payment.pix.completed`).
+- **Payload:** Must be a flat object where possible, validated by a Zod schema in `packages/shared`.
+
+**State Management Patterns:**
+- **React State:** Use `useOptimistic` for UI updates; React Query/SWR for server state.
+- **Immutability:** Absolute requirement for all state updates.
+
+### Process Patterns
+
+**Error Handling Patterns:**
+- **Express:** Global middleware to catch all async errors and return the Standard Envelope.
+- **Frontend:** Error Boundaries at the feature level to prevent total app crashes.
+
+**Loading State Patterns:**
+- **Naming:** Use boolean `isLoading` or status strings `'idle' | 'loading' | 'success' | 'error'`.
+- **Skeleton Screens:** Required for all primary data-fetching components to meet the 2.5s LCP goal.
+
+### Enforcement Guidelines
+
+**All AI Agents MUST:**
+- Use the shared Zod schemas in `packages/shared` for ALL API request/response validation.
+- Implement explicit return types for all functions and API handlers.
+- Co-locate tests for every new feature implementation.
