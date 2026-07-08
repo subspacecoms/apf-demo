@@ -1,3 +1,7 @@
 .agents
 runners
 .turbo
+node_modules
+dist
+.dev_*.sh
+.next
