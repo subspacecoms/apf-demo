@@ -1,8 +1,9 @@
 ---
-stepsCompleted: [1, 2, 3]
+stepsCompleted: [1, 2, 3, 4]
 inputDocuments:
   - "docs/specs/plans/prds/prd-Casas-Bahia-2025-05-19/prd.md"
   - "docs/specs/plans/architecture.md"
+status: complete
 ---
 
 # Casas Bahia - Epic Breakdown
@@ -25,7 +26,7 @@ FR7: User Authentication with CPF tax ID validation and Multi-Factor Authenticat
 FR8: Profile & Address Management with Brazilian CEP (postal code) auto-lookup via ViaCEP integration.
 FR9: Multi-level Department Mega-menu (Eletrodomésticos, TVs, Móveis, etc.).
 FR10: Real-time Search with debounced autocomplete.
-FR11: Personalization Engine: "Indicados com base nas suas visits" recommendation carousels.
+FR11: Personalization Engine: "Indicados com base nas suas visitas" recommendation carousels.
 FR12: Dynamic Pricing Engine (PIX discount, Credit Card 12x interest-free, Carnê Digital).
 FR13: Delivery Estimator and Store Pick-up (Retira Rápido) availability lookup.
 FR14: Instant PIX Payment with real-time QR Code generation and WebSocket status confirmation.
@@ -222,7 +223,7 @@ So that my shopping experience feels personalized.
 **Acceptance Criteria:**
 **Given** a user session with browsing history
 **When** I view the homepage or product pages
-**Then** the "Indicados com base nas suas visitas" carousel displays relevant products
+**Then** the "Indicados com base nas suas visits" carousel displays relevant products
 **And** the list is updated based on recent views.
 
 ## Epic 4: Product Detail Experience & Dynamic Pricing
