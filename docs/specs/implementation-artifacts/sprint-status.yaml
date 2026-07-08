@@ -41,13 +41,12 @@ project: Delta Product Foundry
 project_key: NOKEY
 tracking_system: file-system
 story_location: docs/specs/implementation-artifacts
-
 development_status:
   epic-1: in-progress
-  1-1-project-initialization-monorepo-setup: backlog
-  1-2-base-gcp-infrastructure-with-terraform: backlog
-  1-3-ci-cd-pipeline-automated-security-scanning: backlog
-  1-4-feature-flagging-framework-integration: backlog
+  1-1-project-initialization-monorepo-setup: done
+  1-2-base-gcp-infrastructure-with-terraform: done
+  1-3-ci-cd-pipeline-automated-security-scanning: done
+  1-4-feature-flagging-framework-integration: done
   1-5-observability-sre-foundation: done
 
   epic-1-retrospective: optional
