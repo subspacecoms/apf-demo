@@ -2,7 +2,7 @@
 project_name: 'Casas Bhaia'
 user_name: 'accounts.google.com:107764536614723260958'
 date: '2024-05-17'
-sections_completed: ['technology_stack', 'language_specific_rules', 'framework_specific_rules', 'testing_rules', 'code_quality_rules', 'workflow_rules']
+sections_completed: ['technology_stack', 'language_specific_rules', 'framework_specific_rules', 'testing_rules', 'code_quality_rules', 'workflow_rules', 'critical_dont_miss_rules']
 existing_patterns_found: 0
 ---
 
@@ -81,3 +81,12 @@ _This file contains critical rules and patterns that AI agents must follow when 
 - **PR Requirements**: All tests pass, no linting errors, and documentation updated for new features.
 - **Local Dev**: Use `docker-compose up` to spin up the PostgreSQL environment before starting the dev server.
 - **Deployment**: Next.js and Express backend deployed to **Google Cloud Run**; Database on **Google Cloud SQL**.
+
+### Critical Don't-Miss Rules
+
+- **Anti-Pattern: Hydration Mismatches**: Never use browser-only globals (like `window` or `localStorage`) in Next.js Server Components without checking for existence or using `useEffect` in a Client Component.
+- **Anti-Pattern: Secret Leaks**: Never hardcode API keys or Cloud SQL credentials. Always use `process.env` validated by the Zod schema.
+- **Security Rule: SQL Injection**: Never use template strings for raw SQL queries. Always use parameterized queries or a type-safe query builder.
+- **Performance Gotcha: N+1 Queries**: Avoid fetching data in a loop. Use JOINs or batched queries when interacting with PostgreSQL.
+- **Next.js/Express Boundary**: Do not duplicate business logic. If logic is shared between the frontend and the Express middleware, it must live in `src/shared/` or a dedicated service layer.
+- **Cloud SQL Connectivity**: Ensure that the Cloud SQL Auth Proxy is correctly configured or that IAM database authentication is used for secure production connections.
