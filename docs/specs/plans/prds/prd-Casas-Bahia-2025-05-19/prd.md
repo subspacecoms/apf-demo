@@ -1,6 +1,6 @@
 ---
 title: Casas Bahia Portal Revamp PRD
-status: draft
+status: final
 created: 2025-05-19
 updated: 2025-05-19
 ---
@@ -45,21 +45,27 @@ To rebuild the Casas Bahia portal into the most agile and secure retail platform
 - **Zero Trust Security** — A security model where no entity is trusted by default, requiring strict verification for every access request.
 - **Agility Gap** — The delay in feature release caused by legacy monolithic dependencies.
 - **FX (Foreign Exchange)** — The conversion of one currency to another, including associated fees and taxes (e.g., IOF).
+- **Shared Types** — Common TypeScript interfaces used by both Next.js and Express to ensure data consistency at the boundary.
 
 ## 4. Features
 
 ### 4.1 Payment Orchestration (Pix & EBANKS)
-**Description:** A unified payment service that abstracts the complexity of local and international payment gateways. Realizes UJ-1, UJ-2. [ASSUMPTION: The system uses a Strategy pattern to switch between Pix and EBANKS providers.]
+**Description:** A unified payment service that abstracts the complexity of local and international payment gateways. Realizes UJ-1, UJ-2. Uses a Strategy pattern to switch between Pix and EBANKS providers. All payment data structures must use **Shared Types** and be validated via **Zod** at the API boundary.
 
 **Functional Requirements:**
 
 #### FR-1: Dynamic Pix Generation
 The system must generate a unique Pix QR code and "Copia e Cola" string for every order.
-- **Consequences:** QR code expires after 30 minutes; order status updates to "Paid" within 5 seconds of payment notification.
+- **Consequences (testable):** 
+  - QR code expires after 30 minutes.
+  - Order status updates to "Paid" within 5 seconds of payment notification.
+  - System returns HTTP 400 with a structured Zod error if the request payload is malformed.
 
 #### FR-2: Cross-Border FX Calculation
 The system must calculate and display final BRL totals for international purchases, including FX fees and IOF.
-- **Consequences:** Tax breakdown must be visible at the final checkout step.
+- **Consequences (testable):** 
+  - Tax breakdown must be visible at the final checkout step.
+  - System returns a graceful error message and logs a "High" severity alert if the EBANKS FX rate service is unavailable (Timeout > 3s).
 
 ### 4.2 Decoupled Frontend (Next.js)
 **Description:** A high-performance, SEO-optimized frontend using Next.js App Router.
@@ -94,13 +100,11 @@ The system must calculate and display final BRL totals for international purchas
 - **SM-4 (Conversion):** Payment Success Rate for Cross-border. Target: > 85%.
 
 ## 8. Open Questions
-1. What is the exact FX markup policy for EBANKS transactions?
-2. Which international regions are the primary focus for the EBANKS rollout?
-3. What is the threshold for "High Performance" load during Black Friday? [ASSUMPTION: 100k concurrent users.]
+1. **FX Policy:** What is the exact FX markup policy for EBANKS transactions? (Owner: Finance/Business)
+2. **Regional Focus:** Which international regions are the primary focus for the EBANKS rollout? (Owner: Product Strategy)
 
 ## 9. Assumptions Index
 - **[ASSUMPTION: BRL Display]** International prices are displayed in BRL with conversion happening at the checkout stage.
-- **[ASSUMPTION: Strategy Pattern]** The backend uses a pluggable strategy for payment providers.
 - **[ASSUMPTION: Feature Flags]** A feature flagging system is required to hit "daily deployment" goals.
 - **[ASSUMPTION: Load Target]** The platform must handle 100k concurrent users (Black Friday baseline).
 - **[ASSUMPTION: PCI-DSS]** The system must meet PCI-DSS Level 1 compliance requirements.
