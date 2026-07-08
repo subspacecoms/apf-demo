@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1, 2, 3]
+stepsCompleted: [1, 2, 3, 4]
 inputDocuments:
   - "docs/specs/plans/prds/prd-Casas-Bahia-2025-05-19/prd.md"
   - "docs/specs/plans/briefs/brief-Casas-Bahia-2026-05-17/brief.md"
@@ -101,3 +101,61 @@ Monorepo structure with `apps/web` (Next.js), `apps/server` (Express), `packages
 Remote caching for builds and tests; centralized linting (ESLint) and formatting (Prettier).
 
 **Note:** Project initialization using this command should be the first implementation story.
+
+## Core Architectural Decisions
+
+### Decision Priority Analysis
+
+**Critical Decisions (Block Implementation):**
+- **ORM:** Drizzle ORM for type-safe database interactions.
+- **API Pattern:** REST with Shared Zod Schemas for frontend-backend contract enforcement.
+- **Infrastructure:** Google Cloud Run (Dockerized) for scaling and agility.
+
+**Important Decisions (Shape Architecture):**
+- **Caching:** Redis (Google Cloud Memorystore) for session and data caching.
+- **Auth:** NextAuth.js (Auth.js) for flexible, provider-based authentication.
+- **IaC:** Terraform for managing GCP infrastructure.
+
+**Deferred Decisions (Post-MVP):**
+- **Global CDN Optimization:** Deferring advanced Edge routing until traffic patterns are established.
+
+### Data Architecture
+
+- **Database:** PostgreSQL (Cloud SQL)
+- **ORM:** **Drizzle ORM (v0.30.x)**
+    - *Rationale:* Lightweight, pure TypeScript, and provides the best performance for high-concurrency environments like Casas Bahia.
+- **Caching:** **Redis (Google Cloud Memorystore v7.x)**
+    - *Rationale:* Essential for sub-2.5s LCP and handling 100k concurrent users during peak retail events.
+
+### Authentication & Security
+
+- **Auth Provider:** **NextAuth.js / Auth.js (v5 beta)**
+    - *Rationale:* Seamless integration with Next.js App Router and supports the secure session management required for retail portals.
+- **Security Pattern:** **Zero Trust**
+    - *Rationale:* All API requests from Next.js to Express must be validated via JWT/Session tokens and verified against Zod schemas.
+
+### API & Communication Patterns
+
+- **API Design:** **RESTful API**
+- **Contract Enforcement:** **Shared Zod Schemas**
+    - *Rationale:* Ensures that the Next.js frontend and Express backend remain in sync without the overhead of GraphQL, while remaining compatible with legacy WMS APIs.
+
+### Infrastructure & Deployment
+
+- **Compute:** **Google Cloud Run**
+    - *Rationale:* Serverless agility with the ability to scale to meet Black Friday demands.
+- **IaC:** **Terraform (v1.8.x)**
+    - *Rationale:* Standardizes infrastructure across environments and ensures reproducible deployments.
+
+### Decision Impact Analysis
+
+**Implementation Sequence:**
+1. Initialize Monorepo with Turborepo.
+2. Setup Shared Zod Schemas and Drizzle Schema.
+3. Configure Express API with REST routes and Zod validation.
+4. Implement NextAuth.js in Next.js app.
+5. Deploy base infrastructure via Terraform to Cloud Run.
+
+**Cross-Component Dependencies:**
+- The **Express API** depends on **Shared Zod Schemas** for request validation.
+- **Next.js Server Actions** depend on the **Express API** for data mutations to maintain the decoupling boundary.
