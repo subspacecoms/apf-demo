@@ -1,93 +1,49 @@
-# generated: 2026-07-08T16:09:19Z
-# last_updated: 2026-07-08T16:09:19Z
-# project: Delta Product Foundry
-# project_key: NOKEY
-# tracking_system: file-system
-# story_location: docs/specs/implementation-artifacts
-
-# STATUS DEFINITIONS:
-# ==================
-# Epic Status:
-#   - backlog: Epic not yet started
-#   - in-progress: Epic actively being worked on
-#   - done: All stories in epic completed
-#
-# Epic Status Transitions:
-#   - backlog → in-progress: Automatically when first story is created (via create-story)
-#   - in-progress → done: Manually when all stories reach 'done' status
-#
-# Story Status:
-#   - backlog: Story only exists in epic file
-#   - ready-for-dev: Story file created in stories folder
-#   - in-progress: Developer actively working on implementation
-#   - review: Ready for code review (via Dev's code-review workflow)
-#   - done: Story completed
-#
-# Retrospective Status:
-#   - optional: Can be completed but not required
-#   - done: Retrospective has been completed
-#
-# WORKFLOW NOTES:
-# ===============
-# - Epic transitions to 'in-progress' automatically when first story is created
-# - Stories can be worked in parallel if team capacity allows
-# - Developer typically creates next story after previous one is 'done' to incorporate learnings
-# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
-
-generated: 2026-07-08T16:09:19Z
-last_updated: 2026-07-08T16:09:19Z
+generated: "2026-07-08T16:09:19Z"
+last_updated: "2026-07-08T19:07:54Z"
 project: Delta Product Foundry
 project_key: NOKEY
 tracking_system: file-system
 story_location: docs/specs/implementation-artifacts
-
 development_status:
-  epic-1: backlog
-  1-1-project-initialization-monorepo-setup: backlog
-  1-2-base-gcp-infrastructure-with-terraform: backlog
-  1-3-ci-cd-pipeline-automated-security-scanning: backlog
-  1-4-feature-flagging-framework-integration: backlog
-  1-5-observability-sre-foundation: backlog
-  epic-1-retrospective: optional
-
-  epic-2: backlog
-  2-1-user-registration-with-cpf-validation: backlog
-  2-2-user-login-with-mfa-nextauth: backlog
-  2-3-profile-address-management-with-viacep-auto-lookup: backlog
-  epic-2-retrospective: optional
-
-  epic-3: backlog
-  3-1-multi-level-department-mega-menu: backlog
-  3-2-debounced-search-autocomplete-api: backlog
-  3-3-personalization-recommendation-carousels: backlog
-  epic-3-retrospective: optional
-
-  epic-4: backlog
-  4-1-ssr-product-detail-page-pdp: backlog
-  4-2-dynamic-pricing-engine-pix-card-carne: backlog
-  4-3-delivery-estimator-store-pick-up-retira-rapido: backlog
-  epic-4-retrospective: optional
-
-  epic-5: backlog
-  5-1-persistent-shopping-cart: backlog
-  5-2-unified-checkout-orchestrator: backlog
-  5-3-instant-pix-payment-with-websocket-confirmation: backlog
-  5-4-multi-card-credit-carne-digital-scoring: backlog
-  epic-5-retrospective: optional
-
-  epic-6: backlog
-  6-1-ebanks-integration-for-international-payments: backlog
-  6-2-cross-border-fx-iof-calculation-service: backlog
-  epic-6-retrospective: optional
-
-  epic-7: backlog
-  7-1-event-driven-oms-pipeline-pub-sub: backlog
-  7-2-automated-nf-e-nota-fiscal-generation: backlog
-  7-3-marketplace-seller-attribution: backlog
-  epic-7-retrospective: optional
-
-  epic-8: backlog
-  8-1-cms-scheduled-banner-management: backlog
-  8-2-digital-accessibility-vlibras-integration: backlog
-  8-3-seo-metadata-core-web-vitals-optimization: backlog
-  epic-8-retrospective: optional
+    1-1-project-initialization-monorepo-setup: done
+    1-2-base-gcp-infrastructure-with-terraform: done
+    1-3-ci-cd-pipeline-automated-security-scanning: done
+    1-4-feature-flagging-framework-integration: done
+    1-5-observability-sre-foundation: done
+    2-1-user-registration-with-cpf-validation: backlog
+    2-2-user-login-with-mfa-nextauth: backlog
+    2-3-profile-address-management-with-viacep-auto-lookup: backlog
+    3-1-multi-level-department-mega-menu: backlog
+    3-2-debounced-search-autocomplete-api: backlog
+    3-3-personalization-recommendation-carousels: backlog
+    4-1-ssr-product-detail-page-pdp: backlog
+    4-2-dynamic-pricing-engine-pix-card-carne: backlog
+    4-3-delivery-estimator-store-pick-up-retira-rapido: backlog
+    5-1-persistent-shopping-cart: backlog
+    5-2-unified-checkout-orchestrator: backlog
+    5-3-instant-pix-payment-with-websocket-confirmation: backlog
+    5-4-multi-card-credit-carne-digital-scoring: backlog
+    6-1-ebanks-integration-for-international-payments: backlog
+    6-2-cross-border-fx-iof-calculation-service: backlog
+    7-1-event-driven-oms-pipeline-pub-sub: backlog
+    7-2-automated-nf-e-nota-fiscal-generation: backlog
+    7-3-marketplace-seller-attribution: backlog
+    8-1-cms-scheduled-banner-management: backlog
+    8-2-digital-accessibility-vlibras-integration: backlog
+    8-3-seo-metadata-core-web-vitals-optimization: backlog
+    epic-1: backlog
+    epic-1-retrospective: optional
+    epic-2: backlog
+    epic-2-retrospective: optional
+    epic-3: backlog
+    epic-3-retrospective: optional
+    epic-4: backlog
+    epic-4-retrospective: optional
+    epic-5: backlog
+    epic-5-retrospective: optional
+    epic-6: backlog
+    epic-6-retrospective: optional
+    epic-7: backlog
+    epic-7-retrospective: optional
+    epic-8: backlog
+    epic-8-retrospective: optional
