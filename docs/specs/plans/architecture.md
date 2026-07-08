@@ -1,10 +1,13 @@
 ---
-stepsCompleted: [1, 2, 3, 4, 5, 6, 7]
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8]
 inputDocuments:
   - "docs/specs/plans/prds/prd-Casas-Bahia-2025-05-19/prd.md"
   - "docs/specs/plans/briefs/brief-Casas-Bahia-2026-05-17/brief.md"
   - "docs/specs/project-context.md"
 workflowType: 'architecture'
+lastStep: 8
+status: 'complete'
+completedAt: '2026-05-17'
 project_name: 'Casas Bahia'
 user_name: 'accounts.google.com:107764536614723260958'
 date: '2026-05-17'
@@ -158,7 +161,7 @@ Remote caching for builds and tests; centralized linting (ESLint) and formatting
 
 **Cross-Component Dependencies:**
 - The **Express API** depends on **Shared Zod Schemas** for request validation.
-- **Next.js Server Actions** depend on the **Express API** for data mutations to maintain the decoupling boundary.
+- **Next.js Server Actions** depend on the **Express API for data mutations to maintain the decoupling boundary.
 
 ## Implementation Patterns & Consistency Rules
 
