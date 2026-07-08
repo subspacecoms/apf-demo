@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1, 2, 3, 4, 5]
+stepsCompleted: [1, 2, 3, 4, 5, 6]
 inputDocuments:
   - "docs/specs/plans/prds/prd-Casas-Bahia-2025-05-19/prd.md"
   - "docs/specs/plans/briefs/brief-Casas-Bahia-2026-05-17/brief.md"
@@ -229,3 +229,109 @@ Remote caching for builds and tests; centralized linting (ESLint) and formatting
 - Use the shared Zod schemas in `packages/shared` for ALL API request/response validation.
 - Implement explicit return types for all functions and API handlers.
 - Co-locate tests for every new feature implementation.
+
+## Project Structure & Boundaries
+
+### Complete Project Directory Structure
+
+```text
+casas-bahia-portal/
+├── README.md
+├── package.json
+├── turbo.json
+├── pnpm-workspace.yaml
+├── .gitignore
+├── .github/
+│   └── workflows/
+│       ├── ci-frontend.yml
+│       ├── ci-backend.yml
+│       └── cd-terraform.yml
+├── apps/
+│   ├── web/ (Next.js Storefront)
+│   │   ├── package.json
+│   │   ├── next.config.js
+│   │   ├── tsconfig.json
+│   │   ├── src/
+│   │   │   ├── app/ (App Router: pages, layouts)
+│   │   │   ├── components/ (Shared UI components)
+│   │   │   ├── features/ (Domain: cart, checkout, search)
+│   │   │   ├── hooks/ (Custom React hooks)
+│   │   │   ├── lib/ (API clients, utils)
+│   │   │   └── middleware.ts
+│   │   └── public/ (Static assets)
+│   └── server/ (Express API Middleware)
+│       ├── package.json
+│       ├── tsconfig.json
+│       ├── src/
+│       │   ├── main.ts (Entry point)
+│       │   ├── api/ (Routes & Controllers)
+│       │   ├── features/ (Domain: payments, products, auth)
+│       │   ├── middleware/ (Global handlers: error, auth, validation)
+│       │   ├── services/ (Business logic & external API integration)
+│       │   └── db/ (Drizzle schema & migrations)
+│       └── tests/ (Integration & unit tests)
+├── packages/
+│   ├── shared/ (Zod schemas, types, constants)
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── src/
+│   │       ├── schemas/ (Zod validation rules)
+│   │       ├── types/ (TS Interfaces)
+│   │       └── constants/ (Shared config)
+│   └── ui/ (Shared design system components)
+│       ├── package.json
+│       └── src/
+├── infra/
+│   └── terraform/ (IaC for GCP)
+│       ├── environments/ (dev, staging, prod)
+│       └── modules/ (cloud-run, cloud-sql, networking)
+└── docker-compose.yml (Local development: PostgreSQL, Redis)
+```
+
+### Architectural Boundaries
+
+**API Boundaries:**
+- The **Express API** acts as the single source of truth for business logic and legacy WMS integration.
+- Communication from the **Next.js frontend** MUST happen via the Express API layer using the standard JSON envelope.
+
+**Component Boundaries:**
+- `packages/shared`: Pure logic and types. No React/DOM dependencies.
+- `apps/web`: Focuses strictly on UI composition, SEO, and client-side interactions.
+
+**Data Boundaries:**
+- **Drizzle Schema:** Centralized in `apps/server/src/db/` but exported to the backend feature modules.
+- **Caching:** Redis managed in the Express layer to cache expensive product data and session info.
+
+### Requirements to Structure Mapping
+
+**Feature/Epic Mapping:**
+- **Payment Orchestration (Pix/EBANKS):** 
+    - Logic lives in `apps/server/src/features/payments/`.
+    - Shared Zod schemas in `packages/shared/src/payments/`.
+- **Decoupled Frontend:** 
+    - Storefront UI in `apps/web/`.
+    - Feature components (Cart, Checkout) in `apps/web/src/features/`.
+- **Infrastructure (GCP/Terraform):** 
+    - Modules in `infra/terraform/modules/`.
+    - Environment configurations in `infra/terraform/environments/`.
+
+**Cross-Cutting Concerns:**
+- **Authentication:** `apps/web/src/lib/auth.ts` (NextAuth) and `apps/server/src/middleware/auth.ts`.
+- **Validation:** Centralized in `packages/shared/src/schemas/`.
+- **UI Kit:** Centralized in `packages/ui/`.
+
+### Integration Points
+
+**Internal Communication:**
+Next.js uses Server Actions or Client fetching to hit the Express API endpoints defined in `apps/server/src/api/`.
+
+**External Integrations:**
+- **Payment Gateways:** EBANKS and Pix handled in `apps/server/src/services/`.
+- **Legacy WMS:** API bridges in `apps/server/src/services/wms/`.
+
+**Data Flow:**
+1. User interacts with Next.js Client Component.
+2. Next.js Server Action or Client Fetch calls the Express API.
+3. Express API validates request using **Shared Zod Schemas**.
+4. Express API interacts with Cloud SQL (PostgreSQL) or External APIs (EBANKS/Pix).
+5. Data is returned in the **Standard JSON Envelope**.
