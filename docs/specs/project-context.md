@@ -2,7 +2,7 @@
 project_name: 'Casas Bhaia'
 user_name: 'accounts.google.com:107764536614723260958'
 date: '2024-05-17'
-sections_completed: ['technology_stack', 'language_specific_rules', 'framework_specific_rules', 'testing_rules', 'code_quality_rules']
+sections_completed: ['technology_stack', 'language_specific_rules', 'framework_specific_rules', 'testing_rules', 'code_quality_rules', 'workflow_rules']
 existing_patterns_found: 0
 ---
 
@@ -73,3 +73,11 @@ _This file contains critical rules and patterns that AI agents must follow when 
   - Components/Files: `kebab-case.tsx` for React components; `camelCase.ts` for logic/utilities.
   - Constants: `UPPER_SNAKE_CASE` for global constants.
 - **Documentation**: JSDoc for complex logic; `README.md` in major directories to explain architectural intent.
+
+### Development Workflow Rules
+
+- **Branch Naming**: Use a prefix pattern: `feature/`, `fix/`, `docs/`, or `refactor/` followed by a descriptive name (e.g., `feature/auth-setup`).
+- **Commit Messages**: Follow **Conventional Commits** (e.g., `feat: add postgres connection pool`).
+- **PR Requirements**: All tests pass, no linting errors, and documentation updated for new features.
+- **Local Dev**: Use `docker-compose up` to spin up the PostgreSQL environment before starting the dev server.
+- **Deployment**: Next.js and Express backend deployed to **Google Cloud Run**; Database on **Google Cloud SQL**.
