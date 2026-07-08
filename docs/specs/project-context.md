@@ -2,7 +2,7 @@
 project_name: 'Casas Bhaia'
 user_name: 'accounts.google.com:107764536614723260958'
 date: '2024-05-17'
-sections_completed: ['technology_stack', 'language_specific_rules', 'framework_specific_rules', 'testing_rules']
+sections_completed: ['technology_stack', 'language_specific_rules', 'framework_specific_rules', 'testing_rules', 'code_quality_rules']
 existing_patterns_found: 0
 ---
 
@@ -58,3 +58,18 @@ _This file contains critical rules and patterns that AI agents must follow when 
 - **Mocking**: Mock external services (e.g., Cloud SQL) for unit tests; use the **Docker PostgreSQL** container for integration and E2E tests that require a real database.
 - **Naming Convention**: Test files must follow the `*.test.ts(x)` pattern and live alongside the code they test.
 - **E2E Organization**: Playwright tests should be located in a dedicated `e2e/` directory at the project root.
+
+### Code Quality & Style Rules
+
+- **Linting & Formatting**: Use **ESLint** (Next.js recommended) and **Prettier**.
+- **Scalable Folder Structure**:
+  - `src/app/`: Next.js Routing and UI composition.
+  - `src/features/`: Domain-specific logic (components, hooks, local types).
+  - `src/shared/`: Cross-cutting UI components (UI kit), hooks, and utils.
+  - `src/server/`: Express API logic, modularized by domain (Routes, Controllers, Services).
+  - `src/middleware/`: Shared middleware logic for both Next.js and Express.
+  - `types/`: Global, project-wide TypeScript definitions.
+- **Naming Conventions**:
+  - Components/Files: `kebab-case.tsx` for React components; `camelCase.ts` for logic/utilities.
+  - Constants: `UPPER_SNAKE_CASE` for global constants.
+- **Documentation**: JSDoc for complex logic; `README.md` in major directories to explain architectural intent.
