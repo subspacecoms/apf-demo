@@ -2,7 +2,7 @@
 project_name: 'Casas Bhaia'
 user_name: 'accounts.google.com:107764536614723260958'
 date: '2024-05-17'
-sections_completed: ['technology_stack', 'language_specific_rules', 'framework_specific_rules']
+sections_completed: ['technology_stack', 'language_specific_rules', 'framework_specific_rules', 'testing_rules']
 existing_patterns_found: 0
 ---
 
@@ -48,3 +48,13 @@ _This file contains critical rules and patterns that AI agents must follow when 
 - **Error Handling**: Implement a global error-handling middleware to catch and format all errors consistently.
 - **Middleware Boundary**: Ensure the Express layer acts as the primary validator (using the Zod rules we established) before hitting the database.
 - **Async Handling**: Use a wrapper or `express-async-handler` to handle async/await errors in routes without manual try/catch bloat.
+
+### Testing Rules
+
+- **Unit & Integration Testing**: Use **Vitest**.
+- **E2E Testing**: Use **Playwright**.
+- **Frontend Testing**: Use **React Testing Library** with Vitest for component testing, focusing on user behavior.
+- **API Testing**: Use **Supertest** with Vitest for testing Express routes and middleware.
+- **Mocking**: Mock external services (e.g., Cloud SQL) for unit tests; use the **Docker PostgreSQL** container for integration and E2E tests that require a real database.
+- **Naming Convention**: Test files must follow the `*.test.ts(x)` pattern and live alongside the code they test.
+- **E2E Organization**: Playwright tests should be located in a dedicated `e2e/` directory at the project root.
