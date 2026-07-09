@@ -17,7 +17,7 @@ output_folder = "{project-root}/docs/specs"
 
 [modules.bmm]
 planning_artifacts = "{project-root}/docs/specs/plans"
-implementation_artifacts = "{project-root}/docs/specs/implementation-artifacts"
+implementation_artifacts = "{project-root}/docs/specs/implementation"
 project_knowledge = "{project-root}/docs"
 
 [agents.bmad-agent-analyst]

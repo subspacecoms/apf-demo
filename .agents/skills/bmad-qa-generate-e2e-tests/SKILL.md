@@ -15,10 +15,23 @@ description: 'Generate end to end automated tests for existing features. Use whe
 - `{skill-root}` resolves to this skill's installed directory (where `customize.toml` lives).
 - `{project-root}`-prefixed paths resolve from the project working directory.
 - `{skill-name}` resolves to the skill directory's basename.
+- `{workflow.<name>}` resolves to fields in `customize.toml`'s `[workflow]` table (overrides win per BMad merge rules).
 
 ## On Activation
 
-### Step 1: Load Config
+### Step 1: Read Customization Configuration
+
+Resolve customizations by reading file `{skill-root}/customize.toml`.
+
+### Step 2: Execute Prepend Steps
+
+Execute each entry in `{workflow.activation_steps_prepend}` in order before proceeding.
+
+### Step 3: Load Persistent Facts
+
+Treat every entry in `{workflow.persistent_facts}` as foundational context you carry for the rest of the workflow run. Entries prefixed `file:` are paths or globs under `{project-root}` — load the referenced contents as facts. All other entries are facts verbatim.
+
+### Step 4: Load Config
 
 Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 
@@ -28,11 +41,11 @@ Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 - `date` as system-generated current datetime
 - YOU MUST ALWAYS SPEAK OUTPUT in your Agent communication style with the config `{communication_language}`
 
-### Step 2: Greet the User
+### Step 5: Greet the User
 
 Greet `{user_name}`, speaking in `{communication_language}`.
 
-### Step 3: Execute Append Steps
+### Step 6: Execute Append Steps
 
 Execute each entry in `{workflow.activation_steps_append}` in order.
 
@@ -58,13 +71,37 @@ Check project for existing test framework:
   - Search online for current recommended test framework for that stack
   - Suggest the meta framework and use it (or ask user to confirm)
 
-### Step 1: Run Tests
+### Step 1: Read Customization Configuration
+
+Resolve customizations by reading file `{skill-root}/customize.toml`.
+
+### Step 2: Generate API Tests (if applicable)
+
+For API endpoints/services, generate tests that:
+
+- Test status codes (200, 400, 404, 500)
+- Validate response structure
+- Cover happy path + 1-2 error cases
+- Use project's existing test framework patterns
+
+### Step 3: Generate E2E Tests (if UI exists)
+
+For UI features, generate tests that:
+
+- Test user workflows end-to-end
+- Use semantic locators (roles, labels, text)
+- Focus on user interactions (clicks, form fills, navigation)
+- Assert visible outcomes
+- Keep tests linear and simple
+- Follow project's existing test patterns
+
+### Step 4: Run Tests
 
 Execute tests to verify they pass (use project's test command).
 
 If failures occur, fix them immediately.
 
-### Step 2: Create Summary
+### Step 5: Create Summary
 
 Output markdown summary:
 

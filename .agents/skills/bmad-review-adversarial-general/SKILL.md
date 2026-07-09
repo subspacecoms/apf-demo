@@ -16,11 +16,9 @@ description: 'Perform a Cynical Review and produce a findings report. Use when t
 
 ## EXECUTION
 
-### Step 1: Receive Content
+### Step 1: Read Customization Configuration
 
-- Load the content to review from provided input or context
-- If content to review is empty, ask for clarification and abort
-- Identify content type (diff, branch, uncommitted changes, document, etc.)
+Resolve customizations by reading file `{skill-root}/customize.toml`.
 
 ### Step 2: Adversarial Analysis
 
