@@ -1,6 +1,6 @@
 ---
-project_name: 'Rx Portal'
-user_name: 'sumeetsing@gcp.altostrat.com'
+project_name: 'Jedi Council'
+user_name: 'org-owner@the-high-council.com'
 date: '2025-01-24'
 sections_completed:
   [
@@ -12,7 +12,7 @@ sections_completed:
     'workflow_rules',
     'anti_patterns',
   ]
-status: 'complete'
+status: 'initialized'
 rule_count: 36
 optimized_for_llm: true
 ---
@@ -37,7 +37,7 @@ _This file contains critical rules and patterns that AI agents must follow when 
 ### Language-Specific Rules
 
 #### Go (Backend)
-- **Error Handling**: Explicitly check all errors. Use `%w` for error wrapping to preserve the error chain.
+- **Error Handling**: Explicitly check all errors. Use `%w` for error wrapping to prevent the error chain.
 - **Concurrency**: Use channels and goroutines sparingly; ensure goroutines are properly managed and terminated via `context`.
 - **Formatting**: Strictly follow `gofmt` and `goimports`.
 
