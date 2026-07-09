@@ -1,0 +1,1621 @@
+diff --git a/docs/spec/implementation-artifacts/9-5-context-aware-auto-start-and-triggers-frontend.md b/docs/spec/implementation-artifacts/9-5-context-aware-auto-start-and-triggers-frontend.md
+index f4b3683..7c5bab2 100644
+--- a/docs/spec/implementation-artifacts/9-5-context-aware-auto-start-and-triggers-frontend.md
++++ b/docs/spec/implementation-artifacts/9-5-context-aware-auto-start-and-triggers-frontend.md
+@@ -1,6 +1,6 @@
+ # Story 9.5: Context-Aware Auto-Start & Triggers (Frontend)
+ 
+-Status: ready-for-dev
++Status: review
+ 
+ ## Story
+ 
+@@ -26,26 +26,39 @@ so that I am guided through the features of that section exactly when I need the
+ 
+ ## Tasks / Subtasks
+ 
+-- [ ] **Task 1: Update Onboarding Store (`ui/src/stores/onboarding.ts`)** (AC: 1, 3, 4)
+-  - [ ] Add `tourStatus` state to `OnboardingState` matching backend structure (including `completed` boolean).
+-  - [ ] Implement helper `getSectionFirstStepIndex(tour: TourType, sectionId: string): number` to locate the first step index for a given section.
+-  - [ ] Ensure `startTour` action supports passing a starting step index and resets `activeTour` and `currentStep` state appropriately.
+-  - [ ] Load `tourStatus` from backend (via profile endpoint) or fallback to local storage on init.
+-- [ ] **Task 2: Implement Context-Aware Trigger Logic in UI (`ui/src/components/shared/OnboardingTour.tsx`)** (AC: 1, 3, 4)
+-  - [ ] Import `useSearchParams` from `next/navigation` to react to query parameter changes (specifically `phase` in workspace).
+-  - [ ] Extract `projectId` from pathname to dynamically query project details using React Query `useQuery` (caches and shares data with Workspace page).
+-  - [ ] Refactor the auto-trigger `useEffect` to:
+-    - Return early if `tourStatus.completed` is true.
+-    - Return early if `activeTour` is already set (running).
+-    - Map route and query parameter states to tour sections:
++- [x] **Task 1: Update Onboarding Store (`ui/src/stores/onboarding.ts`)** (AC: 1, 3, 4)
++  - [x] Add `tourStatus` state to `OnboardingState` matching backend structure (including `completed` boolean).
++  - [x] Implement helper `getSectionFirstStepIndex(tour: TourType, sectionId: string): number` to locate the first step index for a given section.
++  - [x] Ensure `startTour` action supports passing a starting step index and resets `activeTour` and `currentStep` state appropriately.
++  - [x] Load `tourStatus` from backend (via profile endpoint) or fallback to local storage on init.
++- [x] **Task 2: Implement Context-Aware Trigger Logic in UI (`ui/src/components/shared/OnboardingTour.tsx`)** (AC: 1, 3, 4)
++  - [x] Import `useSearchParams` from `next/navigation` to react to query parameter changes (specifically `phase` in workspace).
++  - [x] Extract `projectId` from pathname to dynamically query project details using React Query `useQuery` (caches and shares data with Workspace page).
++  - [x] Refactor the auto-trigger `useEffect` to:
++    - [x] Return early if `tourStatus.completed` is true.
++    - [x] Return early if `activeTour` is already set (running).
++    - [x] Map route and query parameter states to tour sections:
+       - `/projects` -> `catalog-overview` section of `catalog` tour.
+       - `/settings` -> `settings-overview` section of `settings` tour.
+       - `/projects/[id]/workspace` with `phase=ONBOARDING` -> `onboarding-tab` section of `workspace` tour.
+       - `/projects/[id]/workspace` with other phases -> `workspace-overview` section of `workspace` tour.
+-    - Check if the determined section is in `completedSections`.
+-    - If not completed, trigger `startTour` at the calculated section starting step.
+-- [ ] **Task 3: Refine Replay Button Trigger (`ui/src/components/shared/TopBar.tsx`)** (AC: 2)
+-  - [ ] Verify/refine the "Quick Tour" button in the `TopBar` to ensure clicking it calls `startTour` for the current page context without being blocked by `completedSections` or `tourStatus.completed`.
++    - [x] Check if the determined section is in `completedSections`.
++    - [x] If not completed, trigger `startTour` at the calculated section starting step.
++- [x] **Task 3: Refine Replay Button Trigger (`ui/src/components/shared/TopBar.tsx`)** (AC: 2)
++  - [x] Verify/refine the "Quick Tour" button in the `TopBar` to ensure clicking it calls `startTour` for the current page context without being blocked by `completedSections` or `tourStatus.completed`.
++
++
++### Review Findings
++
++- [x] [Review][Patch] Auto-trigger tour loop when tour completed or skipped [OnboardingTour.tsx:140]
++- [x] [Review][Patch] Skipped sections are lost on page reload [onboarding.ts:1083]
++- [x] [Review][Patch] `advanceStep` fails to match background progress [onboarding.ts:1238]
++- [x] [Review][Patch] `TopBar` Quick Tour action defaults to wrong tour for un-onboarded workspaces [TopBar.tsx:255-261]
++- [x] [Review][Patch] Fragile hardcoded step index for project creation replay [TopBar.tsx:266]
++- [x] [Review][Patch] Ignored HTTP Error Status in `syncTourStateWithBackend` [onboarding.ts:1201]
++- [x] [Review][Patch] Race Condition in `syncTourStateWithBackend` [onboarding.ts:1177-1221]
++- [x] [Review][Patch] Missing Error Handling for Project Query in `OnboardingTour` [OnboardingTour.tsx:27-36]
++- [x] [Review][Patch] Fragile `projectId` Extraction from Pathname [OnboardingTour.tsx:25]
+ 
+ ## Dev Notes
+ 
+@@ -75,6 +88,25 @@ Gemini Next
+ 
+ ### Debug Log References
+ 
++- None.
++
+ ### Completion Notes List
+ 
++- Added `tourStatus` state to `OnboardingState` matching Firestore schema.
++- Implemented `getSectionFirstStepIndex` helper to locate starting steps for sections.
++- Assigned granular `sectionId` and `sectionTitle` to all steps across tours in the store config.
++- Refactored `useEffect` auto-trigger in `OnboardingTour` to support section-level completion checks and context-aware page-matching resume using granular section IDs.
++- Incorporated React Query `useQuery` cache sharing to retrieve project status for correct workspace tour phase fallback when phase query param is missing.
++- Updated `TopBar` replay button to support page/phase-specific replay context (triggers `workspace_onboarding` if in ONBOARDING phase).
++- Extended test coverage in `onboarding.test.ts` with assertions verifying the new `tourStatus` state and `getSectionFirstStepIndex` helper logic.
++- Configured path alias resolution for `vitest` tests.
++- Fixed `api` mock in `onboarding.test.ts` to prevent `TypeError` during test runs when sync actions are triggered.
++
+ ### File List
++
++- `ui/src/stores/onboarding.ts`
++- `ui/src/components/shared/OnboardingTour.tsx`
++- `ui/src/components/shared/TopBar.tsx`
++- `ui/src/stores/onboarding.test.ts`
++- `ui/src/components/shared/OnboardingTour.test.tsx`
++- `ui/vitest.config.ts`
+diff --git a/ui/src/components/shared/OnboardingTour.test.tsx b/ui/src/components/shared/OnboardingTour.test.tsx
+new file mode 100644
+index 0000000..df4c7b2
+--- /dev/null
++++ b/ui/src/components/shared/OnboardingTour.test.tsx
+@@ -0,0 +1,129 @@
++// @vitest-environment jsdom
++import React from "react"
++import { render, waitFor, cleanup } from "@testing-library/react"
++import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
++import OnboardingTour from "./OnboardingTour"
++import { useOnboardingStore } from "@/stores/onboarding"
++
++// Mock router/navigation
++const mockPush = vi.fn()
++const mockGet = vi.fn()
++let currentPath = "/projects"
++
++vi.mock("next/navigation", () => ({
++  usePathname: () => currentPath,
++  useRouter: () => ({ push: mockPush }),
++  useSearchParams: () => ({
++    get: mockGet
++  })
++}))
++
++// Mock app store
++vi.mock("@/stores/app", () => ({
++  useAppStore: () => ({
++    lastSelectedProjectId: "proj-123"
++  })
++}))
++
++// Mock react-query
++vi.mock("@tanstack/react-query", () => ({
++  useQuery: () => ({ data: { id: "proj-123", name: "Test Project" } }),
++  useQueryClient: () => ({})
++}))
++
++describe("OnboardingTour Component", () => {
++  const mockStartTour = vi.fn()
++  
++  beforeEach(() => {
++    vi.clearAllMocks()
++    currentPath = "/projects"
++    mockGet.mockReturnValue(null)
++    
++    // Reset onboarding store with mocked actions
++    useOnboardingStore.setState({
++      activeTour: null,
++      currentStep: 0,
++      completedTours: [],
++      completedSections: [],
++      lastActiveStep: null,
++      steps: {
++        catalog: [
++          { target: "#step1", title: "Step 1", description: "Desc 1", placement: "bottom", sectionId: "catalog-overview" },
++          { target: "#step2", title: "Step 2", description: "Desc 2", placement: "bottom", sectionId: "catalog-overview" }
++        ],
++        workspace: [
++          { target: "#w1", title: "W1", description: "", placement: "bottom", sectionId: "workspace-overview" }
++        ],
++        settings: [
++          { target: "#s1", title: "S1", description: "", placement: "bottom", sectionId: "settings-overview" }
++        ],
++        workspace_onboarding: [
++          { target: "#wo1", title: "WO1", description: "", placement: "bottom", sectionId: "onboarding-tab" },
++          { target: "#wo2", title: "WO2", description: "", placement: "bottom", sectionId: "onboarding-tab" }
++        ]
++      },
++      startTour: mockStartTour,
++      nextStep: vi.fn(),
++      prevStep: vi.fn(),
++      endTour: vi.fn(),
++      completeTour: vi.fn(),
++      advanceStep: vi.fn()
++    })
++  })
++
++  afterEach(() => {
++    cleanup()
++  })
++
++  it("auto-starts tour if not completed and on matching page", async () => {
++    render(<OnboardingTour />)
++
++    await waitFor(() => {
++      expect(mockStartTour).toHaveBeenCalledWith("catalog", 0)
++    }, { timeout: 2000 })
++  })
++
++  it("does not auto-start if already completed", async () => {
++    useOnboardingStore.setState({
++      completedSections: ["catalog-overview"]
++    })
++    
++    render(<OnboardingTour />)
++
++    await new Promise(r => setTimeout(r, 1800))
++    expect(mockStartTour).not.toHaveBeenCalled()
++  })
++
++  it("resumes from lastActiveStep if set", async () => {
++    useOnboardingStore.setState({
++      lastActiveStep: {
++        tourId: "catalog",
++        stepIndex: 1
++      }
++    })
++
++    render(<OnboardingTour />)
++
++    await waitFor(() => {
++      expect(mockStartTour).toHaveBeenCalledWith("catalog", 1)
++    }, { timeout: 2000 })
++  })
++
++  it("resumes workspace_onboarding on workspace page with phase=ONBOARDING", async () => {
++    currentPath = "/projects/proj-123/workspace"
++    mockGet.mockReturnValue("ONBOARDING")
++    
++    useOnboardingStore.setState({
++      lastActiveStep: {
++        tourId: "workspace_onboarding",
++        stepIndex: 1
++      }
++    })
++
++    render(<OnboardingTour />)
++
++    await waitFor(() => {
++      expect(mockStartTour).toHaveBeenCalledWith("workspace_onboarding", 1)
++    }, { timeout: 2000 })
++  })
++})
+diff --git a/ui/src/components/shared/OnboardingTour.tsx b/ui/src/components/shared/OnboardingTour.tsx
+index 27b50d0..a00dafe 100644
+--- a/ui/src/components/shared/OnboardingTour.tsx
++++ b/ui/src/components/shared/OnboardingTour.tsx
+@@ -3,17 +3,46 @@
+ import React, { useEffect, useState, useRef } from "react"
+ import { usePathname, useRouter, useSearchParams } from "next/navigation"
+ import { X, ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react"
+-import { useOnboardingStore, TourStep } from "@/stores/onboarding"
++import { useOnboardingStore, TourStep, TourType } from "@/stores/onboarding"
+ import { useAppStore } from "@/stores/app"
+ import { cn } from "@/lib/utils"
+ import { toast } from "sonner"
+-
++import { useQuery } from "@tanstack/react-query"
++import { Project } from "@/lib/types"
++import { api } from "@/lib/api"
+ 
+ export default function OnboardingTour() {
+   const pathname = usePathname()
+   const router = useRouter()
+   const searchParams = useSearchParams()
+   const { lastSelectedProjectId } = useAppStore()
++
++  const rawProjectId = pathname.split("/projects/")[1]?.split("/")[0] || null
++  const projectId = rawProjectId && rawProjectId.trim() !== "" ? rawProjectId : null
++  const isValidProjectId = projectId && projectId !== "new" && projectId !== "create" && /^[a-zA-Z0-9_-]+$/.test(projectId)
++
++  const { data: project, error: projectQueryError } = useQuery<Project>({
++    queryKey: ["project", projectId],
++    queryFn: async () => {
++      if (!projectId) throw new Error("No project ID")
++      try {
++        const res = await api.get(`/api/v1/projects/${projectId}`)
++        if (!res.ok) throw new Error(`Failed to load project details: ${res.statusText}`)
++        return await res.json()
++      } catch (err) {
++        console.error("Error fetching project details in OnboardingTour:", err)
++        throw err
++      }
++    },
++    enabled: !!isValidProjectId
++  })
++
++  useEffect(() => {
++    if (projectQueryError) {
++      toast.error("Failed to load project details for onboarding tour")
++    }
++  }, [projectQueryError])
++
+   const {
+     activeTour,
+     currentStep,
+@@ -22,9 +51,19 @@ export default function OnboardingTour() {
+     prevStep,
+     endTour,
+     completedTours,
+-    startTour
++    startTour,
++    lastActiveStep,
++    skipSection,
++    skipTour,
++    getCurrentSectionInfo,
++    tourStatus,
++    completedSections,
++    getSectionFirstStepIndex,
++    getTourBySectionId
+   } = useOnboardingStore()
+ 
++  const sectionInfo = getCurrentSectionInfo()
++
+   const [targetRect, setTargetRect] = useState<DOMRect | null>(null)
+   const [bubbleStyle, setBubbleStyle] = useState<React.CSSProperties>({})
+   const [arrowStyle, setArrowStyle] = useState<React.CSSProperties>({})
+@@ -34,36 +73,92 @@ export default function OnboardingTour() {
+   const activeStepsList = activeTour ? steps[activeTour] : []
+   const currentStepData: TourStep | undefined = activeStepsList[currentStep]
+ 
++  const completedSectionsJoined = completedSections.join(",")
++  const completedToursJoined = completedTours.join(",")
++  const projectStatus = project?.status
++  const projectIdVal = project?.id
++  const tourCompleted = tourStatus?.completed
++  const lastActiveStepTourId = lastActiveStep?.tourId
++  const lastActiveStepIndex = lastActiveStep?.stepIndex
++
+   // Auto-trigger tour on page load if not completed yet
+   useEffect(() => {
++    if (activeTour) return
++    if (tourCompleted) return
++
+     const isCatalogPage = pathname === "/projects" || pathname === "/projects/"
+     const isWorkspacePage = pathname.includes("/workspace")
+     const isSettingsPage = pathname === "/settings" || pathname === "/settings/"
+-    const phase = searchParams.get("phase")
++    const urlPhase = searchParams.get("phase")
++    const phase = urlPhase || (projectStatus ? (projectStatus === "Onboarded" ? "ANALYSIS" : "ONBOARDING") : null)
++
++    let targetTour: TourType | null = null
++    let targetSection: string | null = null
++
++    if (isCatalogPage) {
++      targetTour = "catalog"
++      targetSection = "catalog-overview"
++    } else if (isSettingsPage) {
++      targetTour = "settings"
++      targetSection = "settings-overview"
++    } else if (isWorkspacePage) {
++      if (!phase) return // wait for project details if phase query param is missing
++      if (phase === "ONBOARDING") {
++        targetTour = "workspace_onboarding"
++        targetSection = "onboarding-tab"
++      } else {
++        targetTour = "workspace"
++        targetSection = "workspace-overview"
++      }
++    }
+ 
+-    if (isCatalogPage && !completedTours.includes("catalog") && !activeTour) {
+-      // Add a minor delay to let the page render fully
+-      const timer = setTimeout(() => {
+-        startTour("catalog")
+-      }, 1500)
+-      return () => clearTimeout(timer)
+-    } else if (isWorkspacePage && !completedTours.includes("workspace_onboarding") && phase === "ONBOARDING" && !activeTour) {
+-      const timer = setTimeout(() => {
+-        startTour("workspace_onboarding")
+-      }, 1500)
+-      return () => clearTimeout(timer)
+-    } else if (isWorkspacePage && !completedTours.includes("workspace") && phase !== "ONBOARDING" && !activeTour) {
+-      const timer = setTimeout(() => {
+-        startTour("workspace")
+-      }, 1500)
+-      return () => clearTimeout(timer)
+-    } else if (isSettingsPage && !completedTours.includes("settings") && !activeTour) {
++    if (!targetTour || !targetSection) return
++
++    // Resume logic using granular sectionId page matching
++    if (lastActiveStepTourId && lastActiveStepIndex !== undefined) {
++      const step = steps[lastActiveStepTourId]?.[lastActiveStepIndex]
++      const granularSectionId = step?.sectionId || lastActiveStepTourId
++
++      const pageMatchesLastActive = 
++        (granularSectionId === "catalog-overview" && isCatalogPage) ||
++        (granularSectionId === "settings-integration" && isSettingsPage) ||
++        (granularSectionId === "project-creation" && pathname.includes("/details")) ||
++        (granularSectionId === "settings-overview" && isSettingsPage) ||
++        (granularSectionId === "onboarding-tab" && isWorkspacePage && phase === "ONBOARDING") ||
++        (granularSectionId === "workspace-overview" && isWorkspacePage && phase !== "ONBOARDING")
++
++      if (pageMatchesLastActive) {
++        const timer = setTimeout(() => {
++          startTour(lastActiveStepTourId, lastActiveStepIndex)
++        }, 1500)
++        return () => clearTimeout(timer)
++      }
++    }
++
++    // Auto-start logic if section not completed and parent tour not completed
++    if (!completedSections.includes(targetSection) && !completedTours.includes(targetTour)) {
++      const startStep = getSectionFirstStepIndex(targetTour, targetSection)
+       const timer = setTimeout(() => {
+-        startTour("settings")
++        startTour(targetTour!, startStep)
+       }, 1500)
+       return () => clearTimeout(timer)
+     }
+-  }, [pathname, completedTours, activeTour, startTour])
++  }, [
++    pathname,
++    completedSectionsJoined,
++    completedToursJoined,
++    activeTour,
++    startTour,
++    lastActiveStepTourId,
++    lastActiveStepIndex,
++    tourCompleted,
++    searchParams,
++    getSectionFirstStepIndex,
++    projectStatus,
++    projectIdVal,
++    steps
++  ])
++
+ 
+   // Handle auto-advancing the catalog tour based on pathname changes
+   useEffect(() => {
+@@ -388,7 +483,12 @@ export default function OnboardingTour() {
+       {/* Spotlight Highlight Ring */}
+       {targetRect && (
+         <div
+-          className="absolute border-2 border-primary/80 rounded-lg pointer-events-none animate-pulse-slow transition-all duration-300 ease-out"
++          className={cn(
++            "absolute border-2 rounded-lg pointer-events-none transition-all duration-300 ease-out",
++            currentStepData?.isAction 
++              ? "border-purple-500/80 shadow-[0_0_15px_rgba(168,85,247,0.5)] animate-pulse" 
++              : "border-primary/80 animate-pulse-slow"
++          )}
+           style={{
+             top: `${targetRect.top + window.scrollY - 4}px`,
+             left: `${targetRect.left + window.scrollX - 4}px`,
+@@ -431,20 +531,49 @@ export default function OnboardingTour() {
+         </p>
+ 
+         {/* Footer */}
+-        <div className="flex items-center justify-between">
+-          {/* Step indicators */}
+-          <span className="text-[10px] font-mono font-semibold text-muted-foreground tracking-wider">
+-            {currentStep + 1} of {activeStepsList.length}
+-          </span>
+-
+-          {/* Navigation controls */}
+-          <div className="flex items-center gap-2 select-none">
++        <div className="flex flex-col gap-3">
++          {/* Step / Section indicators */}
++          <div className="flex items-center justify-between text-[10px] font-mono font-semibold text-muted-foreground tracking-wider border-b border-slate-100 dark:border-slate-800/50 pb-2">
++            {sectionInfo ? (
++              <span className="truncate max-w-[180px]" title={sectionInfo.sectionTitle}>
++                {sectionInfo.sectionTitle} ({sectionInfo.sectionIndex}/{sectionInfo.totalSections})
++              </span>
++            ) : (
++              <span>Step {currentStep + 1} of {activeStepsList.length}</span>
++            )}
++            {sectionInfo && (
++              <span>
++                Step {sectionInfo.stepIndex} of {sectionInfo.totalSteps}
++              </span>
++            )}
++          </div>
+ 
++          {/* Navigation & Skip Controls */}
++          <div className="flex items-center justify-between select-none">
++            {/* Skip Actions */}
++            <div className="flex items-center gap-1.5">
++              {sectionInfo && sectionInfo.totalSections > 1 && (
++                <button
++                  onClick={skipSection}
++                  className="inline-flex h-7 items-center justify-center rounded-md px-2 text-[10px] font-semibold border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none pointer-events-auto transition-colors"
++                >
++                  Skip Section
++                </button>
++              )}
++              <button
++                onClick={skipTour}
++                className="inline-flex h-7 items-center justify-center rounded-md px-2 text-[10px] font-semibold border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none pointer-events-auto transition-colors"
++              >
++                Skip Tour
++              </button>
++            </div>
++
++            {/* Next / Finish Action */}
+             <button
+               onClick={handleNext}
+               disabled={currentStepData.isAction}
+               className={cn(
+-                "inline-flex h-7 items-center justify-center gap-1 rounded-md px-3 text-[11px] font-bold shadow transition-all",
++                "inline-flex h-7 items-center justify-center gap-1 rounded-md px-3 text-[11px] font-bold shadow transition-all focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none",
+                 currentStepData.isAction
+                   ? "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-60"
+                   : "bg-primary text-primary-foreground hover:opacity-95"
+diff --git a/ui/src/components/shared/TopBar.tsx b/ui/src/components/shared/TopBar.tsx
+index 34cd18b..8154934 100644
+--- a/ui/src/components/shared/TopBar.tsx
++++ b/ui/src/components/shared/TopBar.tsx
+@@ -5,6 +5,10 @@ import { useAuthStore } from "@/stores/auth"
+ import { useThemeStore } from "@/stores/theme"
+ import { useActivityStore } from "@/stores/activity"
+ import { useOnboardingStore } from "@/stores/onboarding"
++import { usePathname, useSearchParams } from "next/navigation"
++import { useQuery } from "@tanstack/react-query"
++import { Project } from "@/lib/types"
++import { api } from "@/lib/api"
+ import { 
+   Search, 
+   Bell, 
+@@ -24,11 +28,28 @@ import {
+ } from "@/components/ui/dropdown-menu"
+ 
+ export function TopBar() {
++  const pathname = usePathname()
++  const searchParams = useSearchParams()
++  const rawProjectId = pathname.split("/projects/")[1]?.split("/")[0] || null
++  const projectId = rawProjectId && rawProjectId.trim() !== "" ? rawProjectId : null
++  const isValidProjectId = projectId && projectId !== "new" && projectId !== "create" && /^[a-zA-Z0-9_-]+$/.test(projectId)
++
++  const { data: project } = useQuery<Project>({
++    queryKey: ["project", projectId],
++    queryFn: async () => {
++      if (!projectId) throw new Error("No project ID")
++      const res = await api.get(`/api/v1/projects/${projectId}`)
++      if (!res.ok) throw new Error("Failed to load project details")
++      return res.json()
++    },
++    enabled: !!isValidProjectId
++  })
++
+   const { pageTitle } = useAppStore()
+   const { email, displayName, logout } = useAuthStore()
+   const { themeMode, toggleTheme } = useThemeStore()
+   const { unreadCount, togglePanel } = useActivityStore()
+-  const { startTour } = useOnboardingStore()
++  const { startTour, getSectionFirstStepIndex } = useOnboardingStore()
+ 
+   const userInitial = email && email.length > 0 ? email[0].toUpperCase() : "?"
+ 
+@@ -46,13 +67,19 @@ export function TopBar() {
+         {/* Quick Tour Action button */}
+         <button
+           onClick={() => {
+-            const path = window.location.pathname
+-            if (path.includes("/workspace")) {
+-              startTour("workspace")
+-            } else if (path.includes("/settings")) {
++            const urlPhase = searchParams.get("phase")
++            const phase = urlPhase || (project ? (project.status === "Onboarded" ? "ANALYSIS" : "ONBOARDING") : null)
++
++            if (pathname.includes("/workspace")) {
++              if (phase === "ONBOARDING") {
++                startTour("workspace_onboarding")
++              } else {
++                startTour("workspace")
++              }
++            } else if (pathname.includes("/settings")) {
+               startTour("settings")
+-            } else if (path.includes("/details")) {
+-              startTour("catalog", 12)
++            } else if (pathname.includes("/details")) {
++              startTour("catalog", getSectionFirstStepIndex("catalog", "project-creation"))
+             } else {
+               startTour("catalog")
+             }
+diff --git a/ui/src/stores/onboarding.test.ts b/ui/src/stores/onboarding.test.ts
+new file mode 100644
+index 0000000..de71260
+--- /dev/null
++++ b/ui/src/stores/onboarding.test.ts
+@@ -0,0 +1,335 @@
++import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
++import { useOnboardingStore, TourStep } from "./onboarding"
++import { api } from "@/lib/api"
++
++// Mock api client
++vi.mock("@/lib/api", () => ({
++  api: {
++    get: vi.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({}) } as any)),
++    put: vi.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({}) } as any))
++  }
++}))
++
++// Mock auth store
++vi.mock("./auth", () => ({
++  useAuthStore: {
++    getState: () => ({ email: "test@example.com" })
++  }
++}))
++
++const mockSteps: Record<string, TourStep[]> = {
++  catalog: [
++    { target: "#1", title: "S1 Step 1", description: "", placement: "bottom", sectionId: "sec-1", sectionTitle: "Section 1" },
++    { target: "#2", title: "S1 Step 2", description: "", placement: "bottom", sectionId: "sec-1", sectionTitle: "Section 1" },
++    { target: "#3", title: "S2 Step 1", description: "", placement: "bottom", sectionId: "sec-2", sectionTitle: "Section 2" },
++    { target: "#4", title: "S2 Step 2", description: "", placement: "bottom", sectionId: "sec-2", sectionTitle: "Section 2" },
++    { target: "#5", title: "No Sec Step", description: "", placement: "bottom" }, // Undefined sectionId
++    { target: "#6", title: "S3 Step 1", description: "", placement: "bottom", sectionId: "sec-3", sectionTitle: "Section 3" },
++  ]
++}
++
++describe("Onboarding Store Actions", () => {
++  beforeEach(() => {
++    vi.restoreAllMocks()
++    // Reset store state before each test
++    useOnboardingStore.setState({
++      activeTour: null,
++      currentStep: 0,
++      completedTours: [],
++      completedSections: [],
++      steps: mockSteps as any // Use mock steps for testing
++    })
++    if (typeof window !== "undefined") {
++      localStorage.clear()
++    }
++  })
++
++  afterEach(() => {
++    vi.restoreAllMocks()
++  })
++
++  describe("skipSection", () => {
++    it("skips to the first step of the next section", () => {
++      const store = useOnboardingStore
++      store.getState().startTour("catalog", 0) // Start at sec-1, step 1
++      
++      store.getState().skipSection()
++      
++      expect(store.getState().currentStep).toBe(2) // Should jump to S2 Step 1 (index 2)
++      expect(store.getState().completedSections).toContain("sec-1")
++    })
++
++    it("skips to step with undefined section if it is next", () => {
++      const store = useOnboardingStore
++      store.getState().startTour("catalog", 2) // Start at sec-2, step 1 (index 2)
++      
++      store.getState().skipSection()
++      
++      expect(store.getState().currentStep).toBe(4) // Should jump to No Sec Step (index 4)
++      expect(store.getState().completedSections).toContain("sec-2")
++    })
++
++    it("skips from undefined section to next section", () => {
++      const store = useOnboardingStore
++      store.getState().startTour("catalog", 4) // Start at index 4 (undefined section)
++      
++      store.getState().skipSection()
++      
++      expect(store.getState().currentStep).toBe(5) // Should jump to sec-3 step 1 (index 5)
++      // Since it was undefined, it shouldn't add "undefined" to completedSections
++      expect(store.getState().completedSections).not.toContain("undefined")
++      expect(store.getState().completedSections).not.toContain(undefined)
++    })
++
++    it("completes the tour if there is no next section/step", () => {
++      const store = useOnboardingStore
++      store.getState().startTour("catalog", 5) // Start at sec-3 (index 5)
++      
++      store.getState().skipSection()
++      
++      expect(store.getState().activeTour).toBeNull()
++      expect(store.getState().currentStep).toBe(0)
++      expect(store.getState().completedTours).toContain("catalog")
++      expect(store.getState().completedSections).toContain("sec-3")
++    })
++
++    it("does nothing if no active tour", () => {
++      const store = useOnboardingStore
++      store.getState().skipSection()
++      expect(store.getState().currentStep).toBe(0)
++      expect(store.getState().completedSections).toEqual([])
++    })
++  })
++
++  describe("skipTour", () => {
++    it("resets tour state and marks tour as completed", () => {
++      const store = useOnboardingStore
++      store.getState().startTour("catalog", 1)
++      
++      store.getState().skipTour()
++      
++      expect(store.getState().activeTour).toBeNull()
++      expect(store.getState().currentStep).toBe(0)
++      expect(store.getState().completedTours).toContain("catalog")
++    })
++  })
++
++  describe("getSectionFirstStepIndex", () => {
++    it("returns correct index for existing section", () => {
++      const store = useOnboardingStore
++      const index = store.getState().getSectionFirstStepIndex("catalog", "sec-2")
++      expect(index).toBe(2)
++    })
++
++    it("returns 0 if section does not exist", () => {
++      const store = useOnboardingStore
++      const index = store.getState().getSectionFirstStepIndex("catalog", "non-existent")
++      expect(index).toBe(0)
++    })
++  })
++
++  describe("getCurrentSectionInfo", () => {
++    it("returns correct info for step in first section", () => {
++      const store = useOnboardingStore
++      store.getState().startTour("catalog", 1) // sec-1, step 2 (index 1)
++      
++      const info = store.getState().getCurrentSectionInfo()
++      expect(info).toEqual({
++        sectionTitle: "Section 1",
++        sectionIndex: 1,
++        totalSections: 4, // sec-1, sec-2, default, sec-3
++        stepIndex: 2,
++        totalSteps: 2
++      })
++    })
++
++    it("returns correct info for step in section with undefined id", () => {
++      const store = useOnboardingStore
++      store.getState().startTour("catalog", 4) // index 4 (undefined section)
++      
++      const info = store.getState().getCurrentSectionInfo()
++      expect(info).toEqual({
++        sectionTitle: "Overview", // fallback title
++        sectionIndex: 3,
++        totalSections: 4,
++        stepIndex: 1,
++        totalSteps: 1
++      })
++    })
++
++    it("returns null if no active tour", () => {
++      const store = useOnboardingStore
++      expect(store.getState().getCurrentSectionInfo()).toBeNull()
++    })
++  })
++
++  describe("loadTourStatusFromBackend", () => {
++    it("fetches status and updates state", async () => {
++      const store = useOnboardingStore
++      const mockData = {
++        completed: false,
++        completed_sections: ["catalog"],
++        last_active_step: {
++          section_id: "workspace",
++          step_index: 2
++        }
++      }
++      
++      vi.mocked(api.get).mockResolvedValueOnce({
++        ok: true,
++        json: async () => mockData
++      } as any)
++
++      await store.getState().loadTourStatusFromBackend("test@example.com")
++
++      expect(api.get).toHaveBeenCalledWith("/api/v1/users/test%40example.com/tour-status")
++      expect(store.getState().completedTours).toContain("catalog")
++      expect(store.getState().lastActiveStep).toEqual({
++        tourId: "workspace",
++        stepIndex: 2
++      })
++      expect(store.getState().tourStatus).toEqual({
++        completed: false,
++        completedSections: ["catalog"],
++        lastActiveStep: {
++          tourId: "workspace",
++          stepIndex: 2
++        }
++      })
++    })
++
++    it("resets state if tour is completed on backend", async () => {
++      const store = useOnboardingStore
++      const mockData = {
++        completed: true,
++        completed_sections: ["catalog", "workspace", "settings"],
++        last_active_step: null
++      }
++      
++      vi.mocked(api.get).mockResolvedValueOnce({
++        ok: true,
++        json: async () => mockData
++      } as any)
++
++      await store.getState().loadTourStatusFromBackend("test@example.com")
++
++      expect(store.getState().completedTours).toContain("catalog")
++      expect(store.getState().completedTours).toContain("workspace")
++      expect(store.getState().lastActiveStep).toBeNull()
++      expect(store.getState().activeTour).toBeNull()
++      expect(store.getState().tourStatus).toEqual({
++        completed: true,
++        completedSections: ["catalog", "workspace", "settings"],
++        lastActiveStep: null
++      })
++    })
++  })
++
++  describe("syncTourStateWithBackend", () => {
++    it("sends put request with current status", async () => {
++      const store = useOnboardingStore
++      store.setState({ completedSections: ["catalog"] })
++      
++      vi.mocked(api.put).mockResolvedValueOnce({ ok: true } as any)
++
++      await store.getState().syncTourStateWithBackend("workspace", 1)
++
++      expect(api.put).toHaveBeenCalledWith(
++        "/api/v1/users/test%40example.com/tour-status",
++        expect.objectContaining({
++          completed: false,
++          completed_sections: ["catalog"],
++          last_active_step: {
++            section_id: "workspace",
++            step_index: 1
++          }
++        })
++      )
++      expect(store.getState().tourStatus).toEqual({
++        completed: false,
++        completedSections: ["catalog"],
++        lastActiveStep: {
++          tourId: "workspace",
++          stepIndex: 1
++        }
++      })
++    })
++
++    it("marks completed if all major tours are completed", async () => {
++      const store = useOnboardingStore
++      store.setState({ completedSections: ["catalog", "workspace"] })
++      
++      vi.mocked(api.put).mockResolvedValueOnce({ ok: true } as any)
++
++      await store.getState().syncTourStateWithBackend("settings", 0, true)
++
++      expect(api.put).toHaveBeenCalledWith(
++        "/api/v1/users/test%40example.com/tour-status",
++        expect.objectContaining({
++          completed: true,
++          completed_sections: ["catalog", "workspace", "settings"]
++        })
++      )
++      expect(store.getState().tourStatus).toEqual({
++        completed: true,
++        completedSections: ["catalog", "workspace", "settings"],
++        lastActiveStep: {
++          tourId: "settings",
++          stepIndex: 0
++        }
++      })
++    })
++  })
++
++  describe("advanceStep", () => {
++    it("advances active tour if matches", () => {
++      const store = useOnboardingStore
++      store.setState({
++        activeTour: "catalog",
++        currentStep: 1
++      })
++      
++      const spyNext = vi.spyOn(store.getState(), "nextStep")
++      
++      store.getState().advanceStep("catalog", 1)
++      
++      expect(spyNext).toHaveBeenCalled()
++      spyNext.mockRestore()
++    })
++
++    it("advances background step if matches lastActiveStep and not active", () => {
++      const store = useOnboardingStore
++      store.setState({
++        activeTour: null,
++        lastActiveStep: {
++          tourId: "catalog",
++          stepIndex: 1
++        }
++      })
++      
++      vi.mocked(api.put).mockResolvedValueOnce({ ok: true } as any)
++
++      store.getState().advanceStep("catalog", 1)
++      
++      expect(store.getState().lastActiveStep).toEqual({
++        tourId: "catalog",
++        stepIndex: 2
++      })
++      expect(api.put).toHaveBeenCalled()
++    })
++
++    it("does nothing if doesn't match", () => {
++      const store = useOnboardingStore
++      store.setState({
++        activeTour: "catalog",
++        currentStep: 1
++      })
++      const spyNext = vi.spyOn(store.getState(), "nextStep")
++      
++      store.getState().advanceStep("catalog", 2)
++      
++      expect(spyNext).not.toHaveBeenCalled()
++      spyNext.mockRestore()
++    })
++  })
++})
+diff --git a/ui/src/stores/onboarding.ts b/ui/src/stores/onboarding.ts
+index 7370b42..3307d7b 100644
+--- a/ui/src/stores/onboarding.ts
++++ b/ui/src/stores/onboarding.ts
+@@ -1,4 +1,17 @@
+ import { create } from "zustand"
++import { useAuthStore } from "./auth"
++import { api } from "@/lib/api"
++
++export interface LastActiveStep {
++  tourId: TourType
++  stepIndex: number
++}
++
++export interface TourStatus {
++  completed: boolean
++  completedSections: string[]
++  lastActiveStep: LastActiveStep | null
++}
+ 
+ export type TourType = "catalog" | "workspace" | "settings" | "workspace_onboarding"
+ 
+@@ -8,13 +21,18 @@ export interface TourStep {
+   description: string
+   placement: "top" | "bottom" | "left" | "right" | "center"
+   isAction?: boolean
++  sectionId?: string
++  sectionTitle?: string
+ }
+ 
+ interface OnboardingState {
+   activeTour: TourType | null
+   currentStep: number
+   completedTours: string[]
++  completedSections: string[]
+   steps: Record<TourType, TourStep[]>
++  lastActiveStep: LastActiveStep | null
++  tourStatus: TourStatus | null
+   
+   // Actions
+   startTour: (tour: TourType, startingStep?: number) => void
+@@ -22,6 +40,20 @@ interface OnboardingState {
+   prevStep: () => void
+   endTour: () => void
+   completeTour: (tour: TourType) => void
++  skipSection: () => void
++  skipTour: () => void
++  loadTourStatusFromBackend: (userId: string) => Promise<void>
++  syncTourStateWithBackend: (tourId: TourType, stepIndex: number, completed?: boolean) => Promise<void>
++  getSectionFirstStepIndex: (tour: TourType, sectionId: string) => number
++  advanceStep: (tourId: TourType, expectedStepIndex: number) => void
++  getTourBySectionId: (sectionId: string) => TourType | null
++  getCurrentSectionInfo: () => {
++    sectionTitle: string
++    sectionIndex: number
++    totalSections: number
++    stepIndex: number
++    totalSteps: number
++  } | null
+ }
+ 
+ // Client-safe helper to get completed tours from localStorage
+@@ -45,10 +77,45 @@ const saveCompletedTours = (tours: string[]) => {
+   }
+ }
+ 
++// Client-safe helper to get completed sections from localStorage
++const getSavedCompletedSections = (): string[] => {
++  if (typeof window === "undefined") return []
++  try {
++    const saved = localStorage.getItem("apf_completed_sections")
++    return saved ? JSON.parse(saved) : []
++  } catch (e) {
++    return []
++  }
++}
++
++// Client-safe helper to save completed sections to localStorage
++const saveCompletedSections = (sections: string[]) => {
++  if (typeof window === "undefined") return
++  try {
++    localStorage.setItem("apf_completed_sections", JSON.stringify(sections))
++  } catch (e) {
++    // Ignore storage errors
++  }
++}
++
++// Client-safe helper to get initial tour status from localStorage
++const getInitialTourStatus = (): TourStatus => {
++  const completedSections = getSavedCompletedSections()
++  const completed = ["catalog", "workspace", "settings"].every(t => completedSections.includes(t))
++  return {
++    completed,
++    completedSections,
++    lastActiveStep: null
++  }
++}
++
+ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
+   activeTour: null,
+   currentStep: 0,
+   completedTours: getSavedCompletedTours(),
++  completedSections: getSavedCompletedSections(),
++  lastActiveStep: null,
++  tourStatus: getInitialTourStatus(),
+   
+   steps: {
+     catalog: [
+@@ -56,121 +123,156 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
+         target: "#tour-projects-list",
+         title: "Welcome to Agentic Foundry! 🚀",
+         description: "This is your Project Catalog. Here you can browse and manage all of your Foundry-powered development projects.",
+-        placement: "bottom"
++        placement: "bottom",
++        sectionId: "catalog-overview",
++        sectionTitle: "Catalog Overview"
+       },
+       {
+         target: "#tour-leftbar",
+         title: "Global Navigation Menu 🗺️",
+         description: "Use the left sidebar navigation to toggle between your active workspace, project catalogs, and configurations.",
+-        placement: "right"
++        placement: "right",
++        sectionId: "catalog-overview",
++        sectionTitle: "Catalog Overview"
+       },
+       {
+         target: "#tour-user-secrets-button",
+         title: "Configure User Secrets 🔑",
+         description: "Click the key icon to configure your personal access tokens.",
+         placement: "bottom",
+-        isAction: true
++        isAction: true,
++        sectionId: "catalog-overview",
++        sectionTitle: "Catalog Overview"
+       },
+       {
+         target: "#tour-settings-nav",
+         title: "Settings Navigation 🎛️",
+         description: "Manage visual customizations and link your external accounts.",
+-        placement: "right"
++        placement: "right",
++        sectionId: "settings-integration",
++        sectionTitle: "User Settings"
+       },
+       {
+         target: "#tour-settings-appearance",
+         title: "Visual Preferences 🎨",
+         description: "Toggle between Light and Premium Dark modes to personalize your layout.",
+-        placement: "bottom"
++        placement: "bottom",
++        sectionId: "settings-integration",
++        sectionTitle: "User Settings"
+       },
+       {
+         target: "#tour-settings-credentials",
+         title: "Application Credentials 🗝️",
+         description: "Configure secure credentials for tools like GitHub. AI agents use these credentials to perform automated operations.",
+-        placement: "top"
++        placement: "top",
++        sectionId: "settings-integration",
++        sectionTitle: "User Settings"
+       },
+       {
+         target: "#tour-settings-card-github",
+         title: "GitHub Credentials Card 🔌",
+         description: "Click to expand the GitHub integration card to manage access token.",
+         placement: "top",
+-        isAction: true
++        isAction: true,
++        sectionId: "settings-integration",
++        sectionTitle: "User Settings"
+       },
+       {
+         target: "#tour-secrets-modal-input",
+         title: "Personal Access Token 🔑",
+         description: "Input your GitHub Personal Access Token (PAT) here so agents can access your repositories. These tokens are stored securely per-user, encrypted at rest, and masked in the UI.",
+-        placement: "bottom"
++        placement: "bottom",
++        sectionId: "settings-integration",
++        sectionTitle: "User Settings"
+       },
+       {
+         target: "#tour-settings-validate-github",
+         title: "Validate Connection 🔌",
+         description: "Click 'Validate Link' to test your credentials. Note: valid credentials are recommended to complete the full onboarding workflow.",
+         placement: "bottom",
+-        isAction: true
++        isAction: true,
++        sectionId: "settings-integration",
++        sectionTitle: "User Settings"
+       },
+       {
+         target: "#tour-settings-save-github",
+         title: "Save Credentials 💾",
+         description: "Save credentials to store this token securely under your profile.",
+         placement: "bottom",
+-        isAction: true
++        isAction: true,
++        sectionId: "settings-integration",
++        sectionTitle: "User Settings"
+       },
+       {
+         target: "#tour-leftbar-projects",
+         title: "Go Back to Projects list 📂",
+         description: "Click Projects to go back to the catalog list page",
+         placement: "right",
+-        isAction: true
++        isAction: true,
++        sectionId: "settings-integration",
++        sectionTitle: "User Settings"
+       },
+       {
+         target: "#tour-catalog-create",
+         title: "Create a Project 🏗️",
+         description: "Now let's launch a new project. Click 'Create Project'",
+         placement: "left",
+-        isAction: true
++        isAction: true,
++        sectionId: "catalog-overview",
++        sectionTitle: "Catalog Overview"
+       },
+       {
+         target: "#tour-general-config-card",
+         title: "General Configuration 📝",
+         description: "First, give your project a unique name and detailed description.",
+-        placement: "bottom"
++        placement: "bottom",
++        sectionId: "project-creation",
++        sectionTitle: "Create Project"
+       },
+-
+       {
+         target: "#tour-project-github-repo",
+         title: "Select Repository 📂",
+         description: "Select the specific GitHub repository this project is bound to.",
+         placement: "bottom",
+-        isAction: true
++        isAction: true,
++        sectionId: "project-creation",
++        sectionTitle: "Create Project"
+       },
+       {
+         target: "#tour-project-save-button",
+         title: "Save Project Changes 💾",
+         description: "Click 'Save Changes' to initialize your project.",
+         placement: "bottom",
+-        isAction: true
++        isAction: true,
++        sectionId: "project-creation",
++        sectionTitle: "Create Project"
+       },
+       {
+         target: "#tour-toggle-list-view",
+         title: "Switch to List View 📋",
+         description: "Try switching to the List View to see a more compact representation of your projects.",
+         placement: "bottom",
+-        isAction: true
++        isAction: true,
++        sectionId: "catalog-complete",
++        sectionTitle: "Get Started"
+       },
+       {
+         target: "#tour-catalog-tabs",
+         title: "Toggle Shared Projects 📂",
+         description: "Click on 'Shared Projects' tab to see projects shared by other members in the database.",
+         placement: "bottom",
+-        isAction: true
++        isAction: true,
++        sectionId: "catalog-complete",
++        sectionTitle: "Get Started"
+       },
+       {
+         target: ".tour-project-launch-button",
+         title: "Begin Onboarding! 🚀",
+         description: "Click 'Onboard' on your newly created project card to launch the workspace and start collaborating with AI agents!",
+         placement: "left",
+-        isAction: true
++        isAction: true,
++        sectionId: "catalog-complete",
++        sectionTitle: "Get Started"
+       }
+     ],
+     workspace: [
+@@ -178,37 +280,49 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
+         target: "#tour-workspace-phases",
+         title: "Multi-Phase Workflow Gates 🏁",
+         description: "APF guides projects through 5 sequential gates: Onboarding, Analysis, Planning, Solutioning, and Implementation. Satisfying phase criteria unlocks subsequent gates, with progress tracked by live status bubbles.",
+-        placement: "bottom"
++        placement: "bottom",
++        sectionId: "workspace-overview",
++        sectionTitle: "Workspace Overview"
+       },
+       {
+         target: "#tour-workspace-health",
+         title: "Workspace gate Validator 🩺",
+         description: "Run Health Check diagnostics to execute deep gate evaluations. This forces state checks and keeps all pipeline gates synchronized with agents.",
+-        placement: "bottom"
++        placement: "bottom",
++        sectionId: "workspace-overview",
++        sectionTitle: "Workspace Overview"
+       },
+       {
+         target: "#tour-workspace-sidebar",
+         title: "Orchestration Control Panel 🎛️",
+         description: "This collapsible sidebar organizes your workspace assets: manage isolated chat session contexts, trigger standard command macros under actions, and view synced folder artifacts.",
+-        placement: "right"
++        placement: "right",
++        sectionId: "workspace-overview",
++        sectionTitle: "Workspace Overview"
+       },
+       {
+         target: "#tour-workspace-chat",
+         title: "Autonomous Agent Workspace 💬",
+         description: "Engage your agent! Type instructions, switch agent personas, observe live thinking steps, and watch as the agent runs background commands or edits documents.",
+-        placement: "right"
++        placement: "right",
++        sectionId: "workspace-overview",
++        sectionTitle: "Workspace Overview"
+       },
+       {
+         target: "#tour-chat-file-upload-button",
+         title: "Context Integration (File Upload) 📎",
+         description: "Upload local specifications, designs, or code files to provide rich context to your agent. Supported formats include text, PDF, and images (Max 10MB).",
+-        placement: "top"
++        placement: "top",
++        sectionId: "workspace-overview",
++        sectionTitle: "Workspace Overview"
+       },
+       {
+         target: "#tour-workspace-canvas",
+         title: "Live Document & Design Canvas 🎨",
+         description: "View the output in real-time! Explore generated markdown specifications, directly modify files, inspect code changes via diff previews, or complete reviews.",
+-        placement: "left"
++        placement: "left",
++        sectionId: "workspace-overview",
++        sectionTitle: "Workspace Overview"
+       }
+     ],
+     settings: [
+@@ -216,25 +330,33 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
+         target: "#tour-settings-nav",
+         title: "Settings Sections Navigation 🗺️",
+         description: "Easily navigate between visual configurations (like app theme styling preferences) and secure API integration credentials.",
+-        placement: "right"
++        placement: "right",
++        sectionId: "settings-overview",
++        sectionTitle: "Settings Overview"
+       },
+       {
+         target: "#tour-settings-appearance",
+         title: "Visual Customizations 🎨",
+         description: "Personalize your Foundry layout theme! Switch dynamically between high-daylight Light Mode and premium, low-strain dark mode.",
+-        placement: "bottom"
++        placement: "bottom",
++        sectionId: "settings-overview",
++        sectionTitle: "Settings Overview"
+       },
+       {
+         target: "#tour-settings-credentials",
+         title: "Developer Key Vault 🗝️",
+         description: "Link your global API credentials securely (GitHub tokens, Figma keys, etc.). AI agents reference these credentials to perform automated coding or system operations.",
+-        placement: "bottom"
++        placement: "bottom",
++        sectionId: "settings-overview",
++        sectionTitle: "Settings Overview"
+       },
+       {
+         target: ".tour-settings-credential-card",
+         title: "API Configuration and Connection Checks 🔌",
+         description: "Expand integration cards to edit usernames, secrets, or access keys. Use 'Validate Link' to test the connection status instantly with third-party endpoints!",
+-        placement: "top"
++        placement: "top",
++        sectionId: "settings-overview",
++        sectionTitle: "Settings Overview"
+       }
+     ],
+     workspace_onboarding: [
+@@ -242,39 +364,53 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
+         target: "#tour-workspace-phase-onboarding",
+         title: "Onboarding Phase 🏁",
+         description: "Welcome to the Onboarding Phase. Here we will scan your repository to understand its structure and prepare it for collaboration.",
+-        placement: "bottom"
++        placement: "bottom",
++        sectionId: "onboarding-tab",
++        sectionTitle: "Workspace Onboarding"
+       },
+       {
+         target: "#tour-onboarding-start-scan-button",
+         title: "Start Discovery Scan 🔍",
+         description: "Click this button to trigger the background discovery agent. It will analyze your code stack and dependencies.",
+         placement: "bottom",
+-        isAction: true
++        isAction: true,
++        sectionId: "onboarding-tab",
++        sectionTitle: "Workspace Onboarding"
+       },
+       {
+         target: "#tour-onboarding-activity-stream",
+         title: "Live Progress Log 📋",
+         description: "Watch the scan progress in real-time. The agent logs its findings here as it discovers your project structure.",
+-        placement: "top"
++        placement: "top",
++        sectionId: "onboarding-tab",
++        sectionTitle: "Workspace Onboarding"
+       },
+       {
+         target: "#tour-onboarding-tree-picker",
+         title: "Interactive Directory Tree Picker 📂",
+         description: "Review the discovered files. Select which ones you want to ingest as context, and choose whether to keep existing files or overwrite them.",
+-        placement: "top"
++        placement: "top",
++        sectionId: "onboarding-tab",
++        sectionTitle: "Workspace Onboarding"
+       },
+       {
+         target: "#tour-onboarding-complete-button",
+         title: "Complete Onboarding 🎉",
+         description: "Click 'Complete Onboarding' to finalize the process. This will generate and commit 'project-context.md' and unlock the remaining workspace tools.",
+         placement: "top",
+-        isAction: true
++        isAction: true,
++        sectionId: "onboarding-tab",
++        sectionTitle: "Workspace Onboarding"
+       }
+     ]
+   },
+ 
+   startTour: (tour, startingStep = 0) => {
+-    set({ activeTour: tour, currentStep: startingStep })
++    const validStep = Math.max(0, Math.min(startingStep, (get().steps[tour]?.length || 1) - 1))
++    set({ activeTour: tour, currentStep: validStep })
++    const startingStepObj = get().steps[tour]?.[validStep]
++    const sectionId = startingStepObj?.sectionId || tour
++    get().syncTourStateWithBackend(sectionId, validStep)
+   },
+ 
+   nextStep: () => {
+@@ -283,16 +419,25 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
+     
+     const tourSteps = steps[activeTour]
+     if (currentStep < tourSteps.length - 1) {
+-      set({ currentStep: currentStep + 1 })
++      const nextStepVal = currentStep + 1
++      set({ currentStep: nextStepVal })
++      const nextStepObj = tourSteps[nextStepVal]
++      const sectionId = nextStepObj?.sectionId || activeTour
++      get().syncTourStateWithBackend(sectionId, nextStepVal)
+     } else {
+       get().completeTour(activeTour)
+     }
+   },
+ 
+   prevStep: () => {
+-    const { currentStep } = get()
++    const { activeTour, currentStep, steps } = get()
++    if (!activeTour) return
+     if (currentStep > 0) {
+-      set({ currentStep: currentStep - 1 })
++      const prevStepVal = currentStep - 1
++      set({ currentStep: prevStepVal })
++      const prevStepObj = steps[activeTour][prevStepVal]
++      const sectionId = prevStepObj?.sectionId || activeTour
++      get().syncTourStateWithBackend(sectionId, prevStepVal)
+     }
+   },
+ 
+@@ -311,8 +456,236 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
+       const updated = [...completed, tour]
+       set({ completedTours: updated, activeTour: null, currentStep: 0 })
+       saveCompletedTours(updated)
++      get().syncTourStateWithBackend(tour, 0, true)
+     } else {
+       set({ activeTour: null, currentStep: 0 })
++      get().syncTourStateWithBackend(tour, 0, true)
++    }
++  },
++
++  skipSection: () => {
++    const { activeTour, currentStep, steps, completedSections } = get()
++    if (!activeTour) return
++
++    const tourSteps = steps[activeTour]
++    const currentStepObj = tourSteps[currentStep]
++    const currentSectionId = currentStepObj?.sectionId
++
++    // Mark current section as completed if it exists
++    let updatedCompletedSections = completedSections
++    if (currentSectionId) {
++      if (!completedSections.includes(currentSectionId)) {
++        updatedCompletedSections = [...completedSections, currentSectionId]
++        set({ completedSections: updatedCompletedSections })
++        saveCompletedSections(updatedCompletedSections)
++      }
++    }
++
++    // Find the next step that has a different sectionId (or undefined)
++    let nextStepIndex = -1
++    for (let i = currentStep + 1; i < tourSteps.length; i++) {
++      if (tourSteps[i].sectionId !== currentSectionId) {
++        nextStepIndex = i
++        break
++      }
++    }
++
++    if (nextStepIndex !== -1) {
++      set({ currentStep: nextStepIndex })
++      get().syncTourStateWithBackend(activeTour, nextStepIndex)
++    } else {
++      // No more sections, complete the tour
++      get().completeTour(activeTour)
++    }
++  },
++
++  skipTour: () => {
++    const { activeTour } = get()
++    if (!activeTour) return
++    get().completeTour(activeTour)
++  },
++
++  loadTourStatusFromBackend: async (userId: string) => {
++    try {
++      const res = await api.get(`/api/v1/users/${encodeURIComponent(userId)}/tour-status`)
++      if (res.ok) {
++        const data = await res.json()
++        const completedSections = data.completed_sections || []
++        const lastActiveStep = data.last_active_step ? {
++          tourId: data.last_active_step.section_id as TourType,
++          stepIndex: data.last_active_step.step_index
++        } : null
++
++        const tourStatus: TourStatus = {
++          completed: data.completed || false,
++          completedSections,
++          lastActiveStep
++        }
++
++        if (data.completed) {
++          const allTours: TourType[] = ["catalog", "workspace", "settings", "workspace_onboarding"]
++          set({
++            completedTours: allTours,
++            completedSections: data.completed_sections || allTours,
++            lastActiveStep: null,
++            activeTour: null,
++            currentStep: 0,
++            tourStatus: {
++              completed: true,
++              completedSections: data.completed_sections || allTours,
++              lastActiveStep: null
++            }
++          })
++          saveCompletedTours(allTours)
++          saveCompletedSections(data.completed_sections || allTours)
++          return
++        }
++
++        const completedTours = completedSections.filter((s: string) => ["catalog", "workspace", "settings", "workspace_onboarding"].includes(s))
++        
++        set({
++          completedTours,
++          completedSections,
++          lastActiveStep,
++          tourStatus
++        })
++        
++        saveCompletedTours(completedTours)
++        saveCompletedSections(completedSections)
++      }
++    } catch (e) {
++      console.error("Failed to load tour status from backend:", e)
++    }
++  },
++
++  syncTourStateWithBackend: async (tourId: TourType, stepIndex: number, completed?: boolean) => {
++    const { email } = useAuthStore.getState()
++    if (!email) return
++
++    const { completedSections: prevSections, lastActiveStep: prevStep, tourStatus: prevStatus } = get()
++    
++    const updatedCompletedSections = completed ? [...prevSections, tourId] : prevSections
++    const majorTours: TourType[] = ["catalog", "workspace", "settings"]
++    const allCompleted = majorTours.every(t => updatedCompletedSections.includes(t))
++
++    const updatedTourStatus: TourStatus = {
++      completed: allCompleted,
++      completedSections: updatedCompletedSections,
++      lastActiveStep: {
++        tourId: tourId,
++        stepIndex: stepIndex
++      }
++    }
++
++    // Optimistic Update
++    set({
++      completedSections: updatedCompletedSections,
++      lastActiveStep: updatedTourStatus.lastActiveStep,
++      tourStatus: updatedTourStatus
++    })
++    saveCompletedSections(updatedCompletedSections)
++
++    try {
++      const payload = {
++        completed: allCompleted,
++        completed_sections: updatedCompletedSections,
++        last_active_step: {
++          section_id: tourId,
++          step_index: stepIndex
++        }
++      }
++      
++      const res = await api.put(`/api/v1/users/${encodeURIComponent(email)}/tour-status`, payload)
++      if (!res.ok) {
++        throw new Error(`Server returned status ${res.status}: ${res.statusText}`)
++      }
++    } catch (e) {
++      console.error("Failed to sync tour state with backend, rolling back:", e)
++      // Rollback
++      set({
++        completedSections: prevSections,
++        lastActiveStep: prevStep,
++        tourStatus: prevStatus
++      })
++      saveCompletedSections(prevSections)
++    }
++  },
++
++  getSectionFirstStepIndex: (tour: TourType, sectionId: string) => {
++    const tourSteps = get().steps[tour]
++    if (!tourSteps) return 0
++    const index = tourSteps.findIndex(s => s.sectionId === sectionId)
++    return index !== -1 ? index : 0
++  },
++
++  advanceStep: (tourId: TourType, expectedStepIndex: number) => {
++    const { activeTour, currentStep, lastActiveStep, steps } = get()
++    
++    if (activeTour === tourId && currentStep === expectedStepIndex) {
++      get().nextStep()
++      return
++    }
++    
++    if (!activeTour && lastActiveStep && lastActiveStep.tourId === tourId && lastActiveStep.stepIndex === expectedStepIndex) {
++      const nextStepVal = expectedStepIndex + 1
++      const tourSteps = steps[tourId]
++      if (nextStepVal < (tourSteps?.length || 0)) {
++        set({ lastActiveStep: { tourId: tourId, stepIndex: nextStepVal } })
++        get().syncTourStateWithBackend(tourId, nextStepVal)
++      } else {
++        set({ lastActiveStep: null })
++        get().completeTour(tourId)
++      }
++    }
++  },
++
++  getTourBySectionId: (sectionId) => {
++    const { steps } = get()
++    for (const tour of Object.keys(steps) as TourType[]) {
++      if (steps[tour].some(step => step.sectionId === sectionId)) {
++        return tour
++      }
++    }
++    return null
++  },
++
++  getCurrentSectionInfo: () => {
++    const { activeTour, currentStep, steps } = get()
++    if (!activeTour) return null
++
++    const tourSteps = steps[activeTour]
++    if (!tourSteps || tourSteps.length === 0) return null
++
++    const sections: { id: string | undefined; title: string; steps: number[] }[] = []
++    
++    tourSteps.forEach((step, idx) => {
++      const sectionId = step.sectionId
++      const sectionTitle = step.sectionTitle || "Overview"
++      
++      const lastSection = sections[sections.length - 1]
++      if (lastSection && lastSection.id === sectionId) {
++        lastSection.steps.push(idx)
++      } else {
++        sections.push({
++          id: sectionId,
++          title: sectionTitle,
++          steps: [idx]
++        })
++      }
++    })
++
++    const currentSectionIdx = sections.findIndex(sec => sec.steps.includes(currentStep))
++    if (currentSectionIdx === -1) return null
++
++    const currentSection = sections[currentSectionIdx]
++    const stepIndex = currentSection.steps.indexOf(currentStep) + 1
++
++    return {
++      sectionTitle: currentSection.title,
++      sectionIndex: currentSectionIdx + 1,
++      totalSections: sections.length,
++      stepIndex,
++      totalSteps: currentSection.steps.length
+     }
+   }
+ }))
+diff --git a/ui/vitest.config.ts b/ui/vitest.config.ts
+new file mode 100644
+index 0000000..1cafc10
+--- /dev/null
++++ b/ui/vitest.config.ts
+@@ -0,0 +1,10 @@
++import { defineConfig } from 'vitest/config'
++import path from 'path'
++
++export default defineConfig({
++  resolve: {
++    alias: {
++      '@': path.resolve(__dirname, './src')
++    }
++  }
++})
