@@ -50,21 +50,34 @@ After every outcome, present what was learned and pause for the user before cont
 
 ## On Activation
 
-### Step 1: Load config
+### Step 1: Read Customization Configuration
+
+Resolve customizations by reading file `{skill-root}/customize.toml`.
+
+### Step 2: Execute prepend steps
+
+Run each entry in `{workflow.activation_steps_prepend}` in order.
+
+### Step 3: Load persistent facts
+
+Treat each entry in `{workflow.persistent_facts}` as foundational context. `file:` prefixes are paths or globs under
+`{project-root}` (load contents); other entries are facts verbatim.
+
+### Step 4: Load config
 
 Load `{project-root}/_bmad/bmm/config.yaml` and resolve `{user_name}`, `{communication_language}`,
 `{document_output_language}`, `{implementation_artifacts}`, `{project_knowledge}`. If `{implementation_artifacts}` is
 unresolved, fall back to `./investigations/` and surface the fallback before initializing.
 
-### Step 2: Greet
+### Step 5: Greet
 
 Greet `{user_name}` in `{communication_language}`.
 
-### Step 3: Execute append steps
+### Step 6: Execute append steps
 
 Run each entry in `{workflow.activation_steps_append}` in order.
 
-### Step 4: Acknowledge and route
+### Step 7: Acknowledge and route
 
 Acknowledge the input as a reference (record paths and IDs; don't read raw content). Path to an existing case file →
 Outcome 0. Otherwise → Outcome 1.

@@ -33,36 +33,9 @@ When invoked from another prompt or process:
 
 ## FLOW
 
-### Step 1: Method Registry Loading
+### Step 1: Read Customization Configuration
 
-**Action:** Load `./methods.csv` for elicitation methods. If party-mode may participate, resolve the agent roster via:
-
-```bash
-python3 {project-root}/_bmad/scripts/resolve_config.py --project-root {project-root} --key agents
-```
-
-The resolver merges four layers in order: `_bmad/config.toml` (installer base, team-scoped), `_bmad/config.user.toml` (installer base, user-scoped), `_bmad/custom/config.toml` (team overrides), and `_bmad/custom/config.user.toml` (personal overrides). Each entry under `agents` is keyed by the agent's `code` and carries `name`, `title`, `icon`, `description`, `module`, and `team`.
-
-#### CSV Structure
-
-- **category:** Method grouping (core, structural, risk, etc.)
-- **method_name:** Display name for the method
-- **description:** Rich explanation of what the method does, when to use it, and why it's valuable
-- **output_pattern:** Flexible flow guide using arrows (e.g., "analysis -> insights -> action")
-
-#### Context Analysis
-
-- Use conversation history
-- Analyze: content type, complexity, stakeholder needs, risk level, and creative potential
-
-#### Smart Selection
-
-1. Analyze context: Content type, complexity, stakeholder needs, risk level, creative potential
-2. Parse descriptions: Understand each method's purpose from the rich descriptions in CSV
-3. Select 5 methods: Choose methods that best match the context based on their descriptions
-4. Balance approach: Include mix of foundational and specialized techniques as appropriate
-
----
+Resolve customizations by reading file `{skill-root}/customize.toml`.
 
 ### Step 2: Present Options and Handle Responses
 

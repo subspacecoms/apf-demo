@@ -15,6 +15,7 @@ description: 'Create architecture solution design decisions for AI agent consist
 - `{skill-root}` resolves to this skill's installed directory (where `customize.toml` lives).
 - `{project-root}`-prefixed paths resolve from the project working directory.
 - `{skill-name}` resolves to the skill directory's basename.
+- `{workflow.<name>}` resolves to fields in `customize.toml`'s `[workflow]` table (overrides win per BMad merge rules).
 
 ## WORKFLOW ARCHITECTURE
 
@@ -28,7 +29,19 @@ This uses **micro-file architecture** for disciplined execution:
 
 ## On Activation
 
-### Step 1: Load Config
+### Step 1: Read Customization Configuration
+
+Resolve customizations by reading file `{skill-root}/customize.toml`.
+
+### Step 2: Execute Prepend Steps
+
+Execute each entry in `{workflow.activation_steps_prepend}` in order before proceeding.
+
+### Step 3: Load Persistent Facts
+
+Treat every entry in `{workflow.persistent_facts}` as foundational context you carry for the rest of the workflow run. Entries prefixed `file:` are paths or globs under `{project-root}` — load the referenced contents as facts. All other entries are facts verbatim.
+
+### Step 4: Load Config
 
 Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 - Use `{user_name}` for greeting
@@ -37,11 +50,11 @@ Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 - Use `{planning_artifacts}` for output location and artifact scanning
 - Use `{project_knowledge}` for additional context scanning
 
-### Step 2: Greet the User
+### Step 5: Greet the User
 
 Greet `{user_name}`, speaking in `{communication_language}`.
 
-### Step 3: Execute Append Steps
+### Step 6: Execute Append Steps
 
 Execute each entry in `{workflow.activation_steps_append}` in order.
 

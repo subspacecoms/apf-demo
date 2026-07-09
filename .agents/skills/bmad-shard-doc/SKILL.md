@@ -16,14 +16,36 @@ description: 'Splits large markdown documents into smaller, organized files base
 
 ## EXECUTION
 
-### Step 1: Verify Output
+### Step 1: Read Customization Configuration
+
+Resolve customizations by reading file `{skill-root}/customize.toml`.
+
+### Step 2: Get Destination Folder
+
+- Determine default destination: same location as source file, folder named after source file without .md extension
+  - Example: `/path/to/architecture.md` --> `/path/to/architecture/`
+- Ask user for the destination folder path (`[y]` to confirm use of default: `[suggested-path]`, else enter a new path)
+- If user accepts default: use the suggested destination path
+- If user provides custom path: use the custom destination path
+- Verify destination folder exists or can be created
+- Check write permissions for destination
+- If permission denied: HALT with error message
+
+### Step 3: Execute Sharding
+
+- Inform user that sharding is beginning
+- Execute command: `npx @kayvan/markdown-tree-parser explode [source-document] [destination-folder]`
+- Capture command output and any errors
+- If command fails: HALT and display error to user
+
+### Step 4: Verify Output
 
 - Check that destination folder contains sharded files
 - Verify index.md was created in destination folder
 - Count the number of files created
 - If no files created: HALT with error message
 
-### Step 2: Report Completion
+### Step 5: Report Completion
 
 - Display completion report to user including:
   - Source document path and name
@@ -33,7 +55,7 @@ description: 'Splits large markdown documents into smaller, organized files base
   - Any tool output or warnings
 - Inform user that sharding completed successfully
 
-### Step 3: Handle Original Document
+### Step 6: Handle Original Document
 
 > **Critical:** Keeping both the original and sharded versions defeats the purpose of sharding and can cause confusion.
 

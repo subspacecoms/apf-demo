@@ -15,16 +15,29 @@ This skill tracks the overall status of the BMad project by scanning the workspa
 - `{skill-root}` resolves to this skill's installed directory (where `customize.toml` lives).
 - `{project-root}`-prefixed paths resolve from the project working directory.
 - `{skill-name}` resolves to the skill directory's basename.
+- `{workflow.<name>}` resolves to fields in `customize.toml`'s `[workflow]` table (overrides win per BMad merge rules).
 
 ## On Activation
 
-### Step 1: Load Config
+### Step 1: Read Customization Configuration
+
+Resolve customizations by reading file `{skill-root}/customize.toml`.
+
+### Step 2: Execute Prepend Steps
+
+Execute each entry in `{workflow.activation_steps_prepend}` in order before proceeding.
+
+### Step 3: Load Persistent Facts
+
+Treat every entry in `{workflow.persistent_facts}` as foundational context for the whole run. Entries prefixed `file:` are paths or globs — load the referenced contents as facts. All other entries are facts verbatim.
+
+### Step 4: Load Config
 
 Load available config from `{project-root}/_bmad/config.toml` and `{project-root}/_bmad/config.user.toml` (root level and `modules.bmm` / `modules.bmb` sections). Resolve and bind the following variables to their configured paths:
 - `{planning_artifacts}`: Resolved from `modules.bmm.planning_artifacts` (Default: `{project-root}/_bmad-output/planning-artifacts`)
 - `{implementation_artifacts}`: Resolved from `modules.bmm.implementation_artifacts` (Default: `{project-root}/_bmad-output/implementation-artifacts`)
 
-### Step 2: Execute Append Steps
+### Step 5: Execute Append Steps
 
 Execute each entry in `{workflow.activation_steps_append}` in order before entering the workflow's first stage.
 

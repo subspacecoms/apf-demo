@@ -32,7 +32,30 @@ description: 'Clinical copy-editor that reviews text for communication issues. U
 
 ## STEPS
 
-### Step 1: Output Results
+### Step 1: Read Customization Configuration
+
+Resolve customizations by reading file `{skill-root}/customize.toml`.
+
+### Step 2: Analyze Style
+
+- Analyze the style, tone, and voice of the input text
+- Note any intentional stylistic choices to preserve (informal tone, technical jargon, rhetorical patterns)
+- Calibrate review approach based on reader_type:
+  - If `llm`: Prioritize unambiguous references, consistent terminology, explicit structure, no hedging
+  - If `humans`: Prioritize clarity, flow, readability, natural progression
+
+### Step 3: Editorial Review (CRITICAL)
+
+- If style_guide provided: Consult style_guide now and note its key requirements — these override default principles for this review
+- Review all prose sections (skip code blocks, frontmatter, structural markup)
+- Identify communication issues that impede comprehension
+- For each issue, determine the minimal fix that achieves clarity
+- Deduplicate: If same issue appears multiple times, create one entry listing all locations
+- Merge overlapping issues into single entries (no conflicting suggestions)
+- For uncertain fixes, phrase as query: "Consider: [suggestion]?" rather than definitive change
+- Preserve author voice — do not "improve" intentional stylistic choices
+
+### Step 4: Output Results
 
 - If issues found: Output a three-column markdown table with all suggested fixes
 - If no issues found: Output "No editorial issues identified"

@@ -92,7 +92,32 @@ When reader_type='llm', optimize for PRECISION and UNAMBIGUITY:
 
 ## STEPS
 
-### Step 1: Flow Analysis
+### Step 1: Read Customization Configuration
+
+Resolve customizations by reading file `{skill-root}/customize.toml`.
+
+### Step 2: Understand Purpose
+
+- If purpose was provided, use it; otherwise infer from content
+- If target_audience was provided, use it; otherwise infer from content
+- Identify the core question the document answers
+- State in one sentence: "This document exists to help [audience] accomplish [goal]"
+- Select the most appropriate structural model from Structure Models based on purpose/audience
+- Note reader_type and which principles apply (Human-Reader Principles or LLM-Reader Principles)
+
+### Step 3: Structural Analysis (CRITICAL)
+
+- If style_guide provided, consult style_guide now and note its key requirements -- these override default principles for this analysis
+- Map the document structure: list each major section with its word count
+- Evaluate structure against the selected model's primary rules (e.g., 'Does recommendation come first?' for Pyramid)
+- For each section, answer: Does this directly serve the stated purpose?
+- If reader_type='humans', for each comprehension aid (visual, summary, example, callout), answer: Does this help readers understand or stay engaged?
+- Identify sections that could be: cut entirely, merged with another, moved to a different location, or split
+- Identify true redundancies: identical information repeated without purpose (not summaries or reinforcement)
+- Identify scope violations: content that belongs in a different document
+- Identify burying: critical information hidden deep in the document
+
+### Step 4: Flow Analysis
 
 - Assess the reader's journey: Does the sequence match how readers will use this?
 - Identify premature detail: explanation given before the reader needs it
@@ -100,7 +125,7 @@ When reader_type='llm', optimize for PRECISION and UNAMBIGUITY:
 - Identify anti-patterns: FAQs that should be inline, appendices that should be cut, overviews that repeat the body verbatim
 - If reader_type='humans', assess pacing: Is there enough whitespace and visual variety to maintain attention?
 
-### Step 2: Generate Recommendations
+### Step 5: Generate Recommendations
 
 - Compile all findings into prioritized recommendations
 - Categorize each recommendation: CUT (remove entirely), MERGE (combine sections), MOVE (reorder), CONDENSE (shorten significantly), QUESTION (needs author decision), PRESERVE (explicitly keep -- for elements that might seem cuttable but serve comprehension)
@@ -109,7 +134,7 @@ When reader_type='llm', optimize for PRECISION and UNAMBIGUITY:
 - If length_target was provided, assess whether recommendations meet it
 - If reader_type='humans' and recommendations would cut comprehension aids, flag with warning: "This cut may impact reader comprehension/engagement"
 
-### Step 3: Output Results
+### Step 6: Output Results
 
 - Output document summary (purpose, audience, reader_type, current length)
 - Output the recommendation list in priority order

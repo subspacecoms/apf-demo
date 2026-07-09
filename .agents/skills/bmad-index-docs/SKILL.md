@@ -10,7 +10,19 @@ description: 'Generates or updates an index.md to reference all docs in the fold
 
 ## EXECUTION
 
-### Step 1: Create/Update Index
+### Step 1: Read Customization Configuration
+
+Resolve customizations by reading file `{skill-root}/customize.toml`.
+
+### Step 2: Group Content
+
+- Organize files by type, purpose, or subdirectory
+
+### Step 3: Generate Descriptions
+
+- Read each file to understand its actual purpose and create brief (3-10 word) descriptions based on the content, not just the filename
+
+### Step 4: Create/Update Index
 
 - Write or update index.md with organized file listings
 
