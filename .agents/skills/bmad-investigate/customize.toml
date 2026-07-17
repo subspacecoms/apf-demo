@@ -1,0 +1,10 @@
+[workflow]
+activation_steps_prepend = []
+activation_steps_append = []
+persistent_facts = [
+  "file:{project-root}/**/project-context.md",
+]
+case_file_template = "references/case-file-template.md"
+case_file_subdir = "investigations"
+case_file_filename = "{slug}-investigation.md"
+on_complete = ""
